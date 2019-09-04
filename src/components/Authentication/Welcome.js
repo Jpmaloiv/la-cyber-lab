@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { ImageBackground, Text, TouchableOpacity, View } from 'react-native'
 import { Button } from 'react-native-elements'
 import style from '../../../style'
 
@@ -7,31 +7,38 @@ import style from '../../../style'
 export default class Welcome extends React.Component {
     render() {
         return (
-            <View style={[style.body, { flex: 1, justifyContent: 'space-evenly' }]}>
-                <View style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={style.h1}>Welcome to</Text>
-                    <Text style={[style.h1, {  marginBottom: 5 }]}>LA CYBER LAB</Text>
-                    <Text style={{ fontSize: 15, lineHeight: 20 }}>Protecting our community</Text>
-                </View>
+            <ImageBackground source={require('../../../assets/images/welcome.png')} style={{ width: '100%', flex: 1 }}>
+                <View style={{ flex: 1 }}></View>
+                <View style={[style.body, { flex: 3, justifyContent: 'space-evenly' }]}>
+                    <View style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 20 }}>Welcome to</Text>
+                        <Text style={{ fontSize: 35, fontWeight: 'bold' }}>LA CYBER LAB</Text>
+                        <Text style={{ fontSize: 15, lineHeight: 20 }}>Protection Through Partnership</Text>
+                    </View>
 
-                <View style={{ display: 'flex', flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    <Button
-                        title='Create Account'
-                        titleStyle={{ fontSize: 14 }}
-                        buttonStyle={style.button}
-                        onPress={() => this.props.navigation.navigate('CreateAccount')}
-                    />
-                    <View style={{ alignSelf: 'center' }}>
-                        <Text style={{ fontSize: 18, marginBottom: 5 }}>Already have an account?</Text>
-                        <Text
-                            style={{ fontSize: 20, color: '#169aff', textAlign: 'center' }}
-                            onPress={() => this.props.navigation.navigate('SignIn')}
-                        >
-                            Sign in Here
-                    </Text>
+                    <View style={{ display: 'flex', flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
+                        <View>
+                            <Button
+                                title='Create Account'
+                                titleStyle={{ fontSize: 15, fontWeight: '900' }}
+                                buttonStyle={[style.button, { height: 55, width: '100%', alignSelf: 'center' }]}
+                                onPress={() => this.props.navigation.navigate('CreateAccount')}
+                            />
+                        </View>
+                        <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                            <Text style={{ fontSize: 15 }}>Already have an account? </Text>
+                            <TouchableOpacity>
+                                <Text
+                                    style={{ fontSize: 15, color: '#fa4969', fontWeight: 'bold' }}
+                                    onPress={() => this.props.navigation.navigate('SignIn')}
+                                >
+                                    Sign in
+                            </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </ImageBackground>
         )
     }
 }

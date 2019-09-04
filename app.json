@@ -2,20 +2,23 @@
   "expo": {
     "name": "LACyberLab",
     "slug": "LACyberLab",
-    "privacy": "public",
+    "privacy": "unlisted",
     "sdkVersion": "34.0.0",
+    "packagerOpts": {
+      "nonPersistent": "--nonPersistent"
+    },
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "0.1.5",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/logo.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/loading.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#1f243f"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -24,6 +27,11 @@
       "**/*"
     ],
     "ios": {
+      "config": {
+        "googleMapsApiKey": "AIzaSyAPgLN6KhsviVOXybjygwCviqMYtXUQoxM"
+      },
+      "bundleIdentifier": "com.lacyberlab.lacyberlab",
+      "buildNumber": "1",
       "supportsTablet": true
     }
   }

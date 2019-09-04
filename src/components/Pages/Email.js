@@ -20,12 +20,11 @@ export default class Email extends React.Component {
 
     renderItem({ item, index }) {
         return (
-            <View style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
-                <Text style={style.h3}>{item.title}</Text>
-                <Image source={item.src} />
+            <View style={{ alignItems: 'center' }}>
+                <Image source={item.src} style={{marginBottom: 5}} />
                 <View style={{ alignItems: 'center' }}>
-                    <Text style={{ color: '#707992', fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>STEP {index + 1}</Text>
-                    <Text numberOfLines={2} style={{ width: 180, textAlign: 'center', fontSize: 15, lineHeight: 25 }}>{item.desc}</Text>
+                    <Text style={{ color: '#707992', fontSize: 20, fontWeight: 'bold', marginBottom: 2 }}>STEP {index + 1}</Text>
+                    <Text numberOfLines={2} style={{ width: 200, textAlign: 'center', fontSize: 15, lineHeight: 20 }}>{item.desc}</Text>
                 </View>
             </View>
         )
@@ -93,17 +92,14 @@ export default class Email extends React.Component {
 
         const entries = [
             {
-                title: 'HOW IT WORKS',
                 src: require('../../../assets/images/how-it-works_1.png'),
                 desc: 'Send suspicious emails to LA Cyber Lab'
             },
             {
-                title: 'HOW IT WORKS',
                 src: require('../../../assets/images/how-it-works_2.png'),
                 desc: 'LA Cyber Lab will examine the contents of your email'
             },
             {
-                title: 'HOW IT WORKS',
                 src: require('../../../assets/images/how-it-works_3.png'),
                 desc: 'LA Cyber Lab will send you a report about your email'
 
@@ -112,9 +108,9 @@ export default class Email extends React.Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={[style.header, { flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }]}>
+                <View style={[style.header, { alignItems: 'center', paddingBottom: 0}]}>
                     <Text style={style.h6}>Submit your emails to:</Text>
-                    <Text style={style.h2}>{email}</Text>
+                    <Text style={style.h3}>{email}</Text>
 
                     <AnimatedButton
                         style={[style.button, style.animatedButton, { backgroundColor }]}
@@ -131,7 +127,8 @@ export default class Email extends React.Component {
                     </AnimatedButton>
 
                 </View>
-                <View style={[style.body, { flex: 3, justifyContent: 'flex-end', alignItems: 'center' }]}>
+                <View style={[style.body, { flex: 1, alignItems: 'center', marginTop: 0 }]}>
+                    <Text style={[style.h2, {marginBottom: 15}]}>HOW IT WORKS</Text>
                     <Carousel
                         ref={ref => this.carouselRef = ref}
                         data={entries}
@@ -147,7 +144,7 @@ export default class Email extends React.Component {
                         activeDotIndex={this.state.activeSlide}
                         dotStyle={{
                             width: 7,
-                            height: 7,
+                            // height: 7,
                             borderRadius: 5,
                             backgroundColor: '#fa4969'
                         }}

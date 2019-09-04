@@ -9,13 +9,13 @@ export default StyleSheet.create({
         color: '#fff'
     },
     header: {
-        paddingTop: 70,
+        // paddingTop: 70,
         paddingHorizontal: 25,
         paddingBottom: 30,
         backgroundColor: '#232947',
     },
     body: {
-        margin: 25,
+        padding: 25,
         // justifyContent: 'center',
         color: '#fff'
     },
@@ -78,7 +78,7 @@ export default StyleSheet.create({
 
     /* Maps - Custom Marker */
 
-    circle: {
+    circleCritical: {
         width: 25,
         height: 25,
         borderRadius: 30 / 2,
@@ -86,8 +86,25 @@ export default StyleSheet.create({
         borderColor: '#fff',
         backgroundColor: '#fa4969',
     },
-    aura: {
+    auraCritical: {
         backgroundColor: 'rgba(255,0,0,.1)',
+        borderRadius: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 90,
+        height: 90,
+        marginBottom: 10,
+    },
+    circleGuarded: {
+        width: 25,
+        height: 25,
+        borderRadius: 30 / 2,
+        borderWidth: 3,
+        borderColor: '#fff',
+        backgroundColor: '#faf549',
+    },
+    auraGuarded: {
+        backgroundColor: 'rgba(250,245,73,.1)',
         borderRadius: 50,
         justifyContent: 'center',
         alignItems: 'center',
