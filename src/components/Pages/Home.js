@@ -1,6 +1,6 @@
 import React from 'react'
 import constants from '../../../constants'
-import { ActivityIndicator, AsyncStorage, Dimensions, ImageBackground, Linking, Text, Platform, Picker, ScrollView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, AsyncStorage, Dimensions, ImageBackground, Linking, Text, RefreshControl, Platform, Picker, ScrollView, StyleSheet, View } from 'react-native'
 import { ButtonGroup, Divider, Button } from 'react-native-elements'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { Dropdown } from 'react-native-material-dropdown'
@@ -48,6 +48,7 @@ export default class Home extends React.Component {
             activeSlide: 0,
             selectedIndex: 0,
             globalGuarded: [], globalCritical: [],
+            refreshing:false,
             markers: [{ latitude: '', longitude: '' }],
             location: {
                 coords: {
@@ -64,7 +65,12 @@ export default class Home extends React.Component {
         }
     }
 
-
+    _onRefresh =  () =>{
+        this.setState({refreshing: true});
+        this.fetchGraphData().then(() => {
+          this.setState({refreshing: false});
+        }  )
+    }
     componentDidMount() {
         this.fetchGraphData();
     }
@@ -745,10 +751,16 @@ export default class Home extends React.Component {
         // console.log("DAYS", this.state.days)
 
 
-
+        
         return (
 
-            <ScrollView>
+            <ScrollView
+            refreshControl= {
+                <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+            }>
                 <View style={[style.body, { paddingTop: 0 }]}>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

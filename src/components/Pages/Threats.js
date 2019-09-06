@@ -1,6 +1,6 @@
 import React from 'react'
 import constants from '../../../constants'
-import { AsyncStorage, ScrollView, Text, View } from 'react-native'
+import { AsyncStorage, ScrollView, Text, View, RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import { ButtonGroup, ListItem } from 'react-native-elements'
 import moment from 'moment'
@@ -31,7 +31,27 @@ export default class Threats extends React.Component {
                 console.log(err)
             })
     }
-
+    _onRefresh =  () =>{
+        this.setState({refreshing: true});
+        this.fetchData().then(() => {
+          this.setState({refreshing: false});
+        }  )
+    }
+    fetchData = async ()  => {
+        axios.get(`${constants.BASE_URL}/profile/emails?email=${await AsyncStorage.getItem('email')}`,
+            { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
+            .then(resp => {
+                console.log('Profile emails found', resp.data)
+                this.setState({
+                    threatsCritical: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Critical'),
+                    threatsGuarded: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Guarded')
+                })
+                this.updateIndex(0);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
     updateIndex(selectedIndex) {
         this.setState({ selectedIndex })
         if (selectedIndex == 0) this.setState({ threats: this.state.threatsCritical })
@@ -79,7 +99,13 @@ export default class Threats extends React.Component {
                     selectedTextStyle={{ opacity: 1 }}
                 />
 
-                <ScrollView style={[style.body, { backgroundColor: '#1f243f' }]}>
+                <ScrollView 
+                 refreshControl= {
+                    <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh}
+              />}
+              style={[style.body, { backgroundColor: '#1f243f' }]}>
                     {this.state.threats.length > 0 ?
                         <View>
                             {this.state.threats.map((item, i) => (
