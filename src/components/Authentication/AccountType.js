@@ -16,11 +16,10 @@ export default class AccountType extends React.Component {
                 <CheckBox
                     right
                     iconRight
-                    title={<View style={{ padding: 25 }}>
+                    title={<View style={{  flex:1, padding: 25, alignItems:"center",alignSelf:"center"}}>
                         <Text style={style.h3}>Business</Text>
-                        <Text>Lorem ipsum information about business account</Text>
                     </View>}
-                    containerStyle={{ backgroundColor: 'transparent' }}
+                    containerStyle={{ alignContent:"space-between", backgroundColor: 'transparent' }}
                     // textStyle={{ color: '#fff' }}
                     checkedIcon='dot-circle-o'
                     uncheckedIcon='circle-o'
@@ -32,9 +31,9 @@ export default class AccountType extends React.Component {
                 <CheckBox
                     right
                     iconRight
-                    title={<View style={{ padding: 25 }}>
+                    title={<View style={{ flex:1, padding: 25, alignItems:"center"}}>
                         <Text style={style.h3}>Personal</Text>
-                        <Text>Lorem ipsum information about personal account</Text>
+                        <Text></Text>
                     </View>}
                     containerStyle={{ backgroundColor: 'transparent' }}
                     // textStyle={{ color: '#fff' }}

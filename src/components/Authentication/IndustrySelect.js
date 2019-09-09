@@ -47,7 +47,7 @@ export default class IndustrySelect extends React.Component {
                             center
                             title={el.sectorDescription}
                             key={el.userSectorId}
-                            containerStyle={{ backgroundColor: 'transparent' }}
+                            containerStyle={{ alignItems:"flex-start",backgroundColor: 'transparent' }}
                             textStyle={{ color: '#fff' }}
                             checkedIcon='dot-circle-o'
                             uncheckedIcon='circle-o'

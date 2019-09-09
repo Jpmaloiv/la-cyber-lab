@@ -1,11 +1,12 @@
 import React from 'react'
 import constants from '../../../constants'
-import { Alert, AsyncStorage, TouchableOpacity, View } from 'react-native'
+import { Alert, AsyncStorage, TouchableWithoutFeedback, TouchableOpacity, View, Keyboard } from 'react-native'
 import axios from 'axios';
 import { Button, Input, Text } from 'react-native-elements'
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import IconFeather from 'react-native-vector-icons/Feather'
 import style from '../../../style'
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 
 
 export default class ChangePassword extends React.Component {
@@ -48,7 +49,12 @@ export default class ChangePassword extends React.Component {
 
     render() {
         return (
-            <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
+            <KeyboardAwareScrollView 
+            enableOnAndroid
+            contentContainerStyle={[style.body, { flexGrow: 1 }]} keyboardShouldPersistTaps='always'>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+
+                 <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
                 <Text style={[style.h1, { marginBottom: 15 }]}>Change Password</Text>
                 <Input
                     ref={input => this.oldPassword = input}
@@ -126,7 +132,9 @@ export default class ChangePassword extends React.Component {
                         disabledStyle={{ backgroundColor: '#fa496975' }}
                     />
                 </View>
-            </View>
+                </View>
+            </TouchableWithoutFeedback>
+            </KeyboardAwareScrollView>
         )
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import constants from '../../../constants'
-import { ActivityIndicator, Alert, AsyncStorage, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, AsyncStorage, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity,TouchableWithoutFeedback, View,Keyboard } from 'react-native'
 import { Button, Input } from 'react-native-elements';
 import axios from 'axios'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -306,7 +306,8 @@ export default class Profile extends React.Component {
         const { emails } = this.state
 
         return (
-            <View style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+<View style={{flex:1}}>
                 <View style={[this.state.loading || !this.state.connection && { opacity: .5 }, { flex: 1 }]}>
                     <View style={style.header}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -320,19 +321,21 @@ export default class Profile extends React.Component {
                             <View style={{ marginBottom: 20 }}>
                                 <Text style={style.h3}>Profile Name</Text>
                                 <TouchableOpacity style={styles.info} onPress={() => this.firstName.focus()}>
-                                    <Text style={style.h5}>First Name</Text>
                                     <TextInput
                                         ref={input => this.firstName = input}
-                                        style={[style.p, { color: '#fff' }]}
+                                        placeholder="First Name"
+                                        placeholderTextColor="#707992"
+                                        style={[style.h5, { color: '#fff' }]}
                                         value={this.state.firstName}
                                         onChangeText={firstName => this.setState({ firstName })}
                                     />
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.info} onPress={() => this.lastName.focus()}>
-                                    <Text style={style.h5}>Last Name</Text>
                                     <TextInput
+                                     placeholder="Last Name"
+                                     placeholderTextColor="#707992"
                                         ref={input => this.lastName = input}
-                                        style={[style.p, { color: '#fff' }]}
+                                        style={[style.h5, { color: '#fff' }]}
                                         value={this.state.lastName}
                                         onChangeText={lastName => this.setState({ lastName })}
                                     />
@@ -455,7 +458,8 @@ export default class Profile extends React.Component {
                         </View>
                     }
                 </View>
-            </View >
+                </View>
+            </TouchableWithoutFeedback >
 
         )
     }

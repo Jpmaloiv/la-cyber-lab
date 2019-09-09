@@ -1,6 +1,6 @@
 import React from 'react'
 import constants from '../../../constants'
-import { Alert, AsyncStorage, View } from 'react-native'
+import { Alert, AsyncStorage, View, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { Button, Input, Text } from 'react-native-elements'
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import IconFeather from 'react-native-vector-icons/Feather'
@@ -40,6 +40,7 @@ export default class ResetPassword extends React.Component {
     render() {
 
         return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
             <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
                 <Text style={[style.h1, { marginBottom: 15 }]}>Reset Password</Text>
                 <Input
@@ -92,7 +93,8 @@ export default class ResetPassword extends React.Component {
                         disabledStyle={{ backgroundColor: '#fa496975' }}
                     />
                 </View>
-            </View>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 }

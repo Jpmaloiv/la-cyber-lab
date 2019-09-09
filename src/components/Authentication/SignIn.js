@@ -1,6 +1,6 @@
 import React from 'react'
 import constants from '../../../constants'
-import { ActivityIndicator, Alert, AsyncStorage, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, AsyncStorage, Text,  TouchableWithoutFeedback,TouchableOpacity, View, Keyboard } from 'react-native'
 import { Notifications } from 'expo';
 import { Button, Input } from 'react-native-elements'
 import IconAnt from 'react-native-vector-icons/AntDesign'
@@ -156,6 +156,7 @@ export default class SignIn extends React.Component {
 
     render() {
         return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
             <View style={[style.body, this.state.loading && { opacity: .5 }, { flex: 1, justifyContent: 'center' }]}>
                 <View style={{ height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
                     <ActivityIndicator animating={this.state.loading} size="large" color="#fff" />
@@ -209,7 +210,8 @@ export default class SignIn extends React.Component {
                         disabledStyle={{ backgroundColor: '#fa496975' }}
                     />
                 </View>
-            </View>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 }

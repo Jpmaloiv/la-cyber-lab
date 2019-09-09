@@ -1,12 +1,13 @@
 
 import React, { Component } from 'react';
 import constants from '../../../constants'
-import { Alert, KeyboardAvoidingView, Text, TouchableOpacity, View } from 'react-native'
+import { Alert,  Text,Keyboard, TouchableOpacity,TouchableWithoutFeedback, View } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import IconFeather from 'react-native-vector-icons/Feather'
 import style from '../../../style'
 import axios from 'axios';
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 
 
 export default class CreateAccount extends Component {
@@ -88,7 +89,9 @@ export default class CreateAccount extends Component {
     render() {
 
         return (
-            <KeyboardAvoidingView style={[style.body, { flex: 1, paddingBottom: 25 }]} behavior='height' enabled>
+
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+                <View style={[style.body, { flex: 1, paddingBottom: 25 }]} behavior='height' enabled>
                 <View style={{ marginBottom: 15 }}>
                     <Text style={style.h1}>Let's Create</Text>
                     <Text style={style.h1}>Your Account</Text>
@@ -154,7 +157,8 @@ export default class CreateAccount extends Component {
                         disabledStyle={{ backgroundColor: '#fa496975' }}
                     />
                 </View>
-            </KeyboardAvoidingView>
+                </View>
+            </TouchableWithoutFeedback>
         );
     }
 }

@@ -1,10 +1,11 @@
 
 import React, { Component } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, Text, TouchableOpacity, View, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { Button, CheckBox, Input } from 'react-native-elements'
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import IconFeather from 'react-native-vector-icons/Feather'
 import style from '../../../style'
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 
 
 export default class CreatePassword extends Component {
@@ -38,8 +39,14 @@ export default class CreatePassword extends Component {
         if (this.state.password === this.state.confirmPw && this.state.error) this.setState({ error: '' })
 
         return (
-            <ScrollView contentContainerStyle={[style.body, { flexGrow: 1 }]} keyboardShouldPersistTaps='always'>
-                <View style={{ marginBottom: 15 }}>
+
+            <KeyboardAwareScrollView 
+            enableOnAndroid
+            contentContainerStyle={[style.body, { flexGrow: 1 }]} keyboardShouldPersistTaps='always'>
+                            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+
+            <View style={{flex:1}}> 
+               <View style={{ marginBottom: 15 }}>
                     <Text style={style.h1}>Let's Create</Text>
                     <Text style={style.h1}>Your Password</Text>
                 </View>
@@ -100,9 +107,10 @@ export default class CreatePassword extends Component {
                     <CheckBox
                         center
                         size={35}
+                        
                         containerStyle={{ backgroundColor: 'transparent', borderWidth: 0, paddingHorizontal: 0, marginHorizontal: 0, marginTop: 20}}
                         title={<Text style={{fontSize: 12}}>I Agree with the LA Cyber Lab <Text style={{ color: '#fa4969', fontWeight: 'bold' }}>Terms</Text> & <Text style={{ color: '#fa4969', fontWeight: 'bold' }}>Conditions</Text></Text>}
-                        uncheckedIcon={<View style={{backgroundColor: '#202642', height: 33, width: 33, borderRadius: 3, marginRight: 7}} />}
+                        uncheckedIcon={<View style={{ borderWidth:"2%", borderColor:"#FFF",backgroundColor: '#202642', height: 30, width: 30, borderRadius: 3, marginRight: 7}} />}
                         checked={this.state.checked}
                         onPress={() => this.setState({ checked: !this.state.checked })}
                     />
@@ -119,7 +127,10 @@ export default class CreatePassword extends Component {
                         }
                     />
                 </View>
-            </ScrollView >
+                </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAwareScrollView >
+      
         );
     }
 

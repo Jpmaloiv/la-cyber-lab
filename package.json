@@ -23,6 +23,7 @@
     "react-native-global-props": "^1.1.5",
     "react-native-google-image-search": "^0.1.0",
     "react-native-htmlview": "^0.14.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-maps": "git+https://github.com/malithj/react-native-maps.git",
     "react-native-material-dropdown": "^0.11.1",
     "react-native-push-notification-popup": "^1.4.0",

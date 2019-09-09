@@ -1,7 +1,7 @@
 
 import React from 'react';
 import constants from '../../../constants'
-import { Alert, AsyncStorage, Text, View } from 'react-native'
+import { Alert, AsyncStorage, Text, View, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { Notifications } from 'expo';
 
 import { Button, Input } from 'react-native-elements'
@@ -81,6 +81,8 @@ export default class LocationSelect extends React.Component {
     render() {
 
         return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+
             <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
                 <Text style={style.h3}>Where are you located?</Text>
                 <Text style={style.h6}>Your Location</Text>
@@ -102,6 +104,7 @@ export default class LocationSelect extends React.Component {
                     onPress={this.register.bind(this)}
                 />
             </View>
+            </TouchableWithoutFeedback>
         );
     }
 
