@@ -1,6 +1,6 @@
 import React from 'react'
 import constants from '../../../constants'
-import { ActivityIndicator, AsyncStorage, Dimensions, ImageBackground, Linking, Text, RefreshControl, Platform, Picker, ScrollView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, AsyncStorage, Dimensions, Image, ImageBackground, Linking, Text, RefreshControl, Platform, Picker, ScrollView, StyleSheet, View } from 'react-native'
 import { ButtonGroup, Divider, Button } from 'react-native-elements'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { Dropdown } from 'react-native-material-dropdown'
@@ -48,7 +48,7 @@ export default class Home extends React.Component {
             activeSlide: 0,
             selectedIndex: 0,
             globalGuarded: [], globalCritical: [],
-            refreshing:false,
+            refreshing: false,
             markers: [{ latitude: '', longitude: '' }],
             location: {
                 coords: {
@@ -61,15 +61,16 @@ export default class Home extends React.Component {
             activeSector: 1,
             loading: true,
             rss: {},
-            tracksViewChanges: true
+            tracksViewChanges: true,
+            alertLevel: ''
         }
     }
 
-    _onRefresh =  () =>{
-        this.setState({refreshing: true});
+    _onRefresh = () => {
+        this.setState({ refreshing: true });
         this.fetchGraphData().then(() => {
-          this.setState({refreshing: false});
-        }  )
+            this.setState({ refreshing: false });
+        })
     }
     componentDidMount() {
         this.fetchGraphData();
@@ -110,7 +111,7 @@ export default class Home extends React.Component {
             })
             .catch(err => console.log(err))
 
-        //Risk locations for map
+        // Risk locations for map
         axios.get(`${constants.BASE_URL}/dashboard/risk/locations?days=${30}`, { headers: { 'Authorization': token } })
             .then(resp => {
                 // console.log(resp.data)
@@ -345,6 +346,20 @@ export default class Home extends React.Component {
         else if (value === 'Last 90 Days') this.setState({ days: 90 })
     }
 
+    renderAlertLevel() {
+        let alertLevel = this.state.alertLevel.toLowerCase()
+        console.log("Threat alert level:", alertLevel)
+
+        switch (alertLevel) {
+            case 'low': return <Image source={require('../../../assets/images/threat-low.png')} />
+            case 'guarded': return <Image source={require('../../../assets/images/threat-guarded.png')} />
+            case 'critical': return <Image source={require('../../../assets/images/threat-critical.png')} />
+            case 'elevated': return <Image source={require('../../../assets/images/threat-elevated.png')} />
+            case 'severe': return <Image source={require('../../../assets/images/threat-severe.png')} />
+        }
+
+    }
+
     renderItem({ item, index }) {
         return (
             <View style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
@@ -353,13 +368,8 @@ export default class Home extends React.Component {
                         <View style={{ margin: 25 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={style.h3}>THREAT LEVEL</Text>
-                                <Button
-                                    title={this.state.alertLevel}
-                                    titleStyle={{ color: '#fff', fontSize: 10, fontWeight: 'bold' }}
-                                    type='clear'
-                                    style={{ backgroundColor: '#857749', borderColor: '#f5bd00', borderWidth: 2, borderRadius: 25, width: 80, height: 20 }}
-                                    buttonStyle={{ padding: 0 }}
-                                />
+                                {this.renderAlertLevel()}
+
                             </View>
                             <Text style={{ color: '#707992', fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>Security State of Affairs</Text>
                             {/* <Button
@@ -751,16 +761,16 @@ export default class Home extends React.Component {
         // console.log("DAYS", this.state.days)
 
 
-        
+
         return (
 
             <ScrollView
-            refreshControl= {
-                <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-          />
-            }>
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this._onRefresh}
+                    />
+                }>
                 <View style={[style.body, { paddingTop: 0 }]}>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

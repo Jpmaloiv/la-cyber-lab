@@ -219,10 +219,10 @@ class Loading extends React.Component {
   _bootstrapAsync = async () => {
 
     let token = await AsyncStorage.getItem('token');
-    let email = await AsyncStorage.getItem('email')
-    let verified = await AsyncStorage.getItem('verified')
+    let email = await AsyncStorage.getItem('email');
+    let verified = await AsyncStorage.getItem('verified');
 
-    console.log("VERIFIED", verified)
+    console.log("VERIFIED", token, email, verified)
 
     this.props.navigation.navigate(
       token && email ?
@@ -270,24 +270,6 @@ class App extends React.Component {
     // // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
     console.log("VERIFY TOKEN", token)
-
-    // fetch(`${constants.BASE_URL}/notifications`, {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     token: {
-    //       value: token,
-    //     },
-    //     email,
-    //     verified,
-    //     protocol: 'verifyEmail'
-    //   }),
-    // })
-    //   .then(resp => console.log("RESP1", resp))
-    //   .catch(err => console.log("ERR1", err));;
 
     if (verified === 'true') {
       Alert.alert(
@@ -354,7 +336,7 @@ class App extends React.Component {
   async componentDidMount() {
     // let verified = await AsyncStorage.getItem('verified')
     // console.log("HERE", verified)
-    AsyncStorage.clear()
+    // AsyncStorage.clear()
     // Handle email verification if app is opened
     Linking.addEventListener('url', ({ url }) => {
       console.log("Event listener fired:", url)

@@ -31,13 +31,15 @@ export default class Threats extends React.Component {
                 console.log(err)
             })
     }
-    _onRefresh =  () =>{
-        this.setState({refreshing: true});
+
+    _onRefresh = () => {
+        this.setState({ refreshing: true });
         this.fetchData().then(() => {
-          this.setState({refreshing: false});
-        }  )
+            this.setState({ refreshing: false });
+        })
     }
-    fetchData = async ()  => {
+
+    fetchData = async () => {
         axios.get(`${constants.BASE_URL}/profile/emails?email=${await AsyncStorage.getItem('email')}`,
             { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
             .then(resp => {
@@ -61,23 +63,6 @@ export default class Threats extends React.Component {
     render() {
         const buttons = ['Critical', 'Guarded']
 
-        console.log("THREATS", this.state.threatsGuarded)
-
-        console.log(this.state.threats)
-
-        const threats = [{
-            reportTitle: 'CHASE',
-            desc: 'So, we really need your account number right now...',
-            from: 'christ.dubuque@ernser.us',
-            threat: 'Malicious URL'
-        },
-        {
-            reportTitle: 'FRIENDS ONLINE',
-            desc: 'New friends are waiting for you to join with us',
-            from: 'heidenreich_duncan@rau.io',
-            threat: 'Disruptive Virus'
-        }]
-
         return (
             <View>
                 <View style={style.header}>
@@ -99,13 +84,15 @@ export default class Threats extends React.Component {
                     selectedTextStyle={{ opacity: 1 }}
                 />
 
-                <ScrollView 
-                 refreshControl= {
-                    <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this._onRefresh}
-              />}
-              style={[style.body, { backgroundColor: '#1f243f' }]}>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this._onRefresh}
+                        />}
+                    contentContainerStyle={[style.body, { backgroundColor: '#1f243f', flexGrow: 1, height: '100%' }]}
+                >
+
                     {this.state.threats.length > 0 ?
                         <View>
                             {this.state.threats.map((item, i) => (
@@ -113,7 +100,7 @@ export default class Threats extends React.Component {
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
                                         <Text numberOfLines={1} style={{ fontSize: 15, maxWidth: '70%', fontWeight: 'bold' }}>{item.reportTitle}</Text>
                                         <Text style={style.h7}>{moment(item.reportDate).format('MM/DD')}</Text>
-                                        {/* <Text style={style.h7}>{item.desc}</Text> */}
+
                                     </View>
                                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Text numberOfLines={1} style={{ fontSize: 12, color: '#707992', maxWidth: '70%', paddingHorizontal: 10, paddingBottom: 10 }}>{item.eMail}</Text>
@@ -124,8 +111,8 @@ export default class Threats extends React.Component {
                         </View>
                         :
                         <Text style={{ textAlign: 'center' }}>
-                            {/* No emails yet. Please submit your emails to gophish@lacyberlab.net */}
-                            </Text>
+                            No emails yet. Please submit your emails to gophish@lacyberlab.net
+                        </Text>
                     }
                 </ScrollView>
             </View>

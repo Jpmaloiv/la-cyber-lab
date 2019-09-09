@@ -34,7 +34,8 @@ export default class SignIn extends React.Component {
         const secondPair = ['email', this.state.email]
         const thirdPair = ['userProfileId', userProfileId]
         const fourthPair = ['verified', JSON.stringify(verified)]
-        console.log("4TH PAIR", fourthPair)
+
+        console.log("PAIRS", firstPair, secondPair, thirdPair, fourthPair)
         try {
             await AsyncStorage.multiSet([firstPair, secondPair, thirdPair, fourthPair])
         } catch (err) {
@@ -48,10 +49,12 @@ export default class SignIn extends React.Component {
         }
         catch (err) { console.log("Error getting Push Token", err) }
 
-        // Updates profile if a new device is being used
-        axios.post(`${constants.BASE_URL}/users/device?userProfileId=${userProfileId}&deviceId=${deviceId}&fcmToken=`, {}, { headers: { 'Authorization': authorization } })
-            .then(resp => console.log(resp))
-            .catch(err => console.log('Error updating Device ID', err))
+        if (deviceId) {
+            // Updates profile if a new device is being used
+            axios.post(`${constants.BASE_URL}/users/device?userProfileId=${userProfileId}&deviceId=${deviceId}&fcmToken=`, {}, { headers: { 'Authorization': authorization } })
+                .then(resp => console.log(resp))
+                .catch(err => console.log('Error updating Device ID', err))
+        }
 
         this.props.navigation.navigate(verified ? 'Dashboard' : 'Verification')
 
