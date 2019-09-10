@@ -24,7 +24,7 @@ export default class Email extends React.Component {
                 <Image source={item.src} style={{marginBottom: 5}} />
                 <View style={{ alignItems: 'center' }}>
                     <Text style={{ color: '#707992', fontSize: 20, fontWeight: 'bold', marginBottom: 2 }}>STEP {index + 1}</Text>
-                    <Text numberOfLines={2} style={{ width: 200, textAlign: 'center', fontSize: 15, lineHeight: 20 }}>{item.desc}</Text>
+                    <Text numberOfLines={2} style={{  textAlign: 'center', fontSize: 15, lineHeight: 20 }}>{item.desc}</Text>
                 </View>
             </View>
         )
@@ -108,12 +108,12 @@ export default class Email extends React.Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <View style={[style.header, { alignItems: 'center', paddingBottom: 0}]}>
+                <View style={[style.header, { alignItems: 'center',paddingTop:10,  paddingBottom:0,marginBottom:0}]}>
                     <Text style={style.h6}>Submit your emails to:</Text>
                     <Text style={style.h3}>{email}</Text>
 
                     <AnimatedButton
-                        style={[style.button, style.animatedButton, { backgroundColor }]}
+                        style={[style.button, style.animatedButton, { backgroundColor, paddingBottom:0,marginBottom:0 }]}
                         onPress={() => this.copyToClipboard(email)}
                     >
                         <Animated.View style={{ flexDirection: 'row', opacity: this.state.fade1 }}>
@@ -139,6 +139,8 @@ export default class Email extends React.Component {
                         // inactiveSlideOpacity={0}
                         // inactiveSlideScale={0.75}
                     />
+                    </View>
+                    <View>
                     <Pagination
                         dotsLength={entries.length}
                         activeDotIndex={this.state.activeSlide}
@@ -155,7 +157,7 @@ export default class Email extends React.Component {
                         inactiveDotScale={1}
                         inactiveDotOpacity={1}
                     />
-                </View >
+                    </View>
             </View >
         )
     }

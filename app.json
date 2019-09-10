@@ -31,8 +31,21 @@
         "googleMapsApiKey": "AIzaSyAPgLN6KhsviVOXybjygwCviqMYtXUQoxM"
       },
       "bundleIdentifier": "com.lacyberlab.lacyberlab",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.lacyberlab.lacyberlab",
+      "versionCode":2,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAPgLN6KhsviVOXybjygwCviqMYtXUQoxM"
+        }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     }
   }
 }

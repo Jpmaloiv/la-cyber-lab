@@ -49,7 +49,7 @@ export default class Home extends React.Component {
             selectedIndex: 0,
             globalGuarded: [], globalCritical: [],
             refreshing: false,
-            markers: [{ latitude: '', longitude: '' }],
+            markers: [],
             location: {
                 coords: {
                     latitude: 0,
@@ -129,14 +129,14 @@ export default class Home extends React.Component {
                 this.setState({ rss: rss.items[0] })
             });
 
-        if (Platform.OS === 'android' && !Constants.isDevice) {
+        // if (Platform.OS === 'android' && Constants.isDevice) {
 
-            this.setState({
-                errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-            });
-        } else {
+        //     this.setState({
+        //         errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+        //     });
+        // } else {
             this._getLocationAsync();
-        }
+        // }
     }
 
 
@@ -149,7 +149,8 @@ export default class Home extends React.Component {
         }
 
         let location = await Location.getCurrentPositionAsync({});
-        // console.log(location)
+         if (Platform.OS !=="ios") 
+         console.log("Location android",location)
 
 
         this.setState({ location });

@@ -6,6 +6,7 @@ import { ButtonGroup, ListItem } from 'react-native-elements'
 import moment from 'moment'
 import style from '../../../style'
 import axios from 'axios';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default class Threats extends React.Component {
@@ -38,7 +39,11 @@ export default class Threats extends React.Component {
             this.setState({ refreshing: false });
         })
     }
-
+color = () =>{
+   if(this.state.selectedIndex ===0) 
+   return'#fa4969'
+   return"#f5bd00"
+}
     fetchData = async () => {
         axios.get(`${constants.BASE_URL}/profile/emails?email=${await AsyncStorage.getItem('email')}`,
             { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
@@ -96,7 +101,9 @@ export default class Threats extends React.Component {
                     {this.state.threats.length > 0 ?
                         <View>
                             {this.state.threats.map((item, i) => (
-                                <View key={i} style={{ backgroundColor: '#222847', borderRadius: 15, marginVertical: 4 }}>
+                                <TouchableOpacity  onPress={()=> this.props.navigation.navigate('Recommendations', {
+                                    critical: this.state.selectedIndex,
+                                  })}key={i} style={{ backgroundColor: '#222847', borderRadius: 15, marginVertical: 4 }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
                                         <Text numberOfLines={1} style={{ fontSize: 15, maxWidth: '70%', fontWeight: 'bold' }}>{item.reportTitle}</Text>
                                         <Text style={style.h7}>{moment(item.reportDate).format('MM/DD')}</Text>
@@ -104,9 +111,9 @@ export default class Threats extends React.Component {
                                     </View>
                                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <Text numberOfLines={1} style={{ fontSize: 12, color: '#707992', maxWidth: '70%', paddingHorizontal: 10, paddingBottom: 10 }}>{item.eMail}</Text>
-                                        {this.state.selectedIndex == 0 && <View style={{ backgroundColor: '#fa4969', borderTopLeftRadius: 14, borderBottomRightRadius: 14, padding: 10 }}><Text>Malicious URL</Text></View>}
+                                        {<View style={{ backgroundColor: this.color(), borderTopLeftRadius: 14, borderBottomRightRadius: 14, padding: 10 }}><Text>{item.reportIndicatorTypeDesc}</Text></View>}
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             ))}
                         </View>
                         :

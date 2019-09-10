@@ -15,7 +15,13 @@ export default class Recommendations extends React.Component {
             sliderWidth: Dimensions.get('window').width
         }
     }
+componentDidMount=()=>{
+    const { navigation } = this.props;
+    const activeSlide = navigation.getParam('critical', 0);
+    this.setState({activeSlide})
+    this.carouselRef.snapToNext()
 
+}
     renderItem({ item, index }) {
         return (
 
@@ -75,6 +81,9 @@ export default class Recommendations extends React.Component {
         )
     }
     render() {
+        const { navigation } = this.props;
+        const activeSlide = navigation.getParam('critical', 0);
+        // this.carouselRef.scrollToOffset(activeSlide*this.state.sliderWidth)
         return (
             <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
                 <Text style={[style.h3, { alignSelf: 'center' }]}>Recommendations</Text>
@@ -85,10 +94,10 @@ export default class Recommendations extends React.Component {
                         data={text.recommendations}
                         renderItem={this.renderItem}
                         sliderWidth={this.state.sliderWidth}
+                        // initialScrollIndex={activeSlide}
                         onSnapToItem={index => this.setState({ activeSlide: index })}
                         itemWidth={this.state.sliderWidth * .91}
                         removeClippedSubviews={false}
-
                     // inactiveSlideOpacity={0}
                     // inactiveSlideScale={0.75}
                     />

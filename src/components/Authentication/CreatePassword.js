@@ -110,7 +110,7 @@ export default class CreatePassword extends Component {
                         
                         containerStyle={{ backgroundColor: 'transparent', borderWidth: 0, paddingHorizontal: 0, marginHorizontal: 0, marginTop: 20}}
                         title={<Text style={{fontSize: 12}}>I Agree with the LA Cyber Lab <Text style={{ color: '#fa4969', fontWeight: 'bold' }}>Terms</Text> & <Text style={{ color: '#fa4969', fontWeight: 'bold' }}>Conditions</Text></Text>}
-                        uncheckedIcon={<View style={{ borderWidth:"2%", borderColor:"#FFF",backgroundColor: '#202642', height: 30, width: 30, borderRadius: 3, marginRight: 7}} />}
+                        uncheckedIcon={<View style={{ borderWidth:2, borderColor:"#FFF",backgroundColor: '#202642', height: 30, width: 30, borderRadius: 3, marginRight: 7}} />}
                         checked={this.state.checked}
                         onPress={() => this.setState({ checked: !this.state.checked })}
                     />
