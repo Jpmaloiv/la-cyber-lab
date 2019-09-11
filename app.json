@@ -30,6 +30,9 @@
       "config": {
         "googleMapsApiKey": "AIzaSyAPgLN6KhsviVOXybjygwCviqMYtXUQoxM"
       },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "LA Cyber Labs needs your location to find threats near you."
+      },
       "bundleIdentifier": "com.lacyberlab.lacyberlab",
       "buildNumber": "3",
       "supportsTablet": true
