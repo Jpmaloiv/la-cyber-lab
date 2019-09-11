@@ -34,8 +34,8 @@
         "NSLocationWhenInUseUsageDescription": "LA Cyber Labs needs your location to find threats near you."
       },
       "bundleIdentifier": "com.lacyberlab.lacyberlab",
-      "buildNumber": "3",
-      "supportsTablet": true
+      "buildNumber": "4",
+      "supportsTablet": false
     },
     "android": {
       "package": "com.lacyberlab.lacyberlab",
