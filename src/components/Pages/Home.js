@@ -49,7 +49,10 @@ export default class Home extends React.Component {
             selectedIndex: 0,
             globalGuarded: [], globalCritical: [],
             refreshing: false,
-            markers: [],
+            markers: [{
+                latitude: 0,
+                longitude: 0,
+            }],
             location: {
                 coords: {
                     latitude: 0,
@@ -72,7 +75,7 @@ export default class Home extends React.Component {
             this.setState({ refreshing: false });
         })
     }
-    componentDidMount() {
+    componentWillMount() {
         this.fetchGraphData();
     }
 

@@ -6,6 +6,7 @@ import IconAnt from 'react-native-vector-icons/AntDesign'
 import IconFeather from 'react-native-vector-icons/Feather'
 import style from '../../../style'
 import axios from 'axios';
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
 
 
 export default class ResetPassword extends React.Component {
@@ -40,7 +41,7 @@ export default class ResetPassword extends React.Component {
     render() {
 
         return (
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+            <KeyboardAwareScrollView enableOnAndroid  accessible={false} >
             <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
                 <Text style={[style.h1, { marginBottom: 15 }]}>Reset Password</Text>
                 <Input
@@ -94,7 +95,7 @@ export default class ResetPassword extends React.Component {
                     />
                 </View>
                 </View>
-            </TouchableWithoutFeedback>
+            </KeyboardAwareScrollView>
         )
     }
 }

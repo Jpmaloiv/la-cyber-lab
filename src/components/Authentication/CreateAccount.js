@@ -90,7 +90,7 @@ export default class CreateAccount extends Component {
 
         return (
 
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+                <KeyboardAwareScrollView enableOnAndroid accessible={false} >
                 <View style={[style.body, { flex: 1, paddingBottom: 25 }]} behavior='height' enabled>
                 <View style={{ marginBottom: 15 }}>
                     <Text style={style.h1}>Let's Create</Text>
@@ -158,7 +158,7 @@ export default class CreateAccount extends Component {
                     />
                 </View>
                 </View>
-            </TouchableWithoutFeedback>
+            </KeyboardAwareScrollView>
         );
     }
 }

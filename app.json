@@ -4,6 +4,9 @@
     "slug": "LACyberLab",
     "privacy": "unlisted",
     "sdkVersion": "34.0.0",
+    "notification": {
+      "icon": "./assets/images/logo.png"
+    },
     "packagerOpts": {
       "nonPersistent": "--nonPersistent"
     },
@@ -14,7 +17,7 @@
     ],
     "version": "0.2",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/logosmall.png",
     "splash": {
       "image": "./assets/images/loading.png",
       "resizeMode": "cover",
