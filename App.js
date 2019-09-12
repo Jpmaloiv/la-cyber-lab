@@ -392,7 +392,8 @@ class App extends React.Component {
       // this.setState({ notification: notification } 
 
       // Handles IOS notifications in foreground
-      this.popup.show({
+     if(Platform.OS ==="ios") 
+        {this.popup.show({
         onPress: function () { console.log('Pressed') },
         appIconSource: require('./assets/lacl-small.png'),
         appTitle: 'LA Cyber Lab',
@@ -401,7 +402,7 @@ class App extends React.Component {
         body: notification.data.message,
         slideOutTime: 1500
       });
-    }
+    }}
   };
 
 
