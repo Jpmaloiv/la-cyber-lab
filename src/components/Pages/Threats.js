@@ -2,7 +2,7 @@ import React from 'react'
 import constants from '../../../constants'
 import { AsyncStorage, ScrollView, Text, View, RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
-import { ButtonGroup, ListItem } from 'react-native-elements'
+import { ButtonGroup} from 'react-native-elements'
 import moment from 'moment'
 import style from '../../../style'
 import axios from 'axios';
@@ -39,11 +39,13 @@ export default class Threats extends React.Component {
             this.setState({ refreshing: false });
         })
     }
-color = () =>{
-   if(this.state.selectedIndex ===0) 
-   return'#fa4969'
-   return"#f5bd00"
-}
+
+    color = () => {
+        if (this.state.selectedIndex === 0)
+            return '#fa4969'
+        return "#f5bd00"
+    }
+
     fetchData = async () => {
         axios.get(`${constants.BASE_URL}/profile/emails?email=${await AsyncStorage.getItem('email')}`,
             { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
@@ -53,12 +55,13 @@ color = () =>{
                     threatsCritical: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Critical'),
                     threatsGuarded: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Guarded')
                 })
-                this.updateIndex(0);
+                // this.updateIndex(0);
             })
             .catch(err => {
                 console.log(err)
             })
     }
+
     updateIndex(selectedIndex) {
         this.setState({ selectedIndex })
         if (selectedIndex == 0) this.setState({ threats: this.state.threatsCritical })
@@ -101,9 +104,9 @@ color = () =>{
                     {this.state.threats.length > 0 ?
                         <View>
                             {this.state.threats.map((item, i) => (
-                                <TouchableOpacity  onPress={()=> this.props.navigation.navigate('Recommendations', {
-                                    critical: this.state.selectedIndex,
-                                  })}key={i} style={{ backgroundColor: '#222847', borderRadius: 15, marginVertical: 4 }}>
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Recommendations', {
+                                    critical: this.state.selectedIndex == 0 ? 1 : 0,
+                                })} key={i} style={{ backgroundColor: '#222847', borderRadius: 15, marginVertical: 4 }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
                                         <Text numberOfLines={1} style={{ fontSize: 15, maxWidth: '70%', fontWeight: 'bold' }}>{item.reportTitle}</Text>
                                         <Text style={style.h7}>{moment(item.reportDate).format('MM/DD')}</Text>

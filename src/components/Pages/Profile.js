@@ -1,6 +1,6 @@
 import React from 'react'
 import constants from '../../../constants'
-import { ActivityIndicator, Alert, AsyncStorage, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity,TouchableWithoutFeedback, View,Keyboard } from 'react-native'
+import { ActivityIndicator, Alert, AsyncStorage, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Keyboard } from 'react-native'
 import { Button, Input } from 'react-native-elements';
 import axios from 'axios'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -102,7 +102,6 @@ export default class Profile extends React.Component {
 
     validateEmailFormat() {
         let validated = true
-        console.log("EMAILS", this.state.emails)
         for (let i = 0; i < this.state.emails.length; i++) {
             let email = ''
             if ((typeof (this.state.emails[i]) === 'string')) { email = this.state.emails[i] }
@@ -114,6 +113,41 @@ export default class Profile extends React.Component {
             }
         }
         return validated;
+    }
+
+    // Validate that email isn't already registered
+    async validateNewEmail(email) {
+        console.log("HERE", email)
+        let validation = await axios.get(`${constants.BASE_URL}/auth/validate?registeredProfileEmail=${email}`)
+            .then(resp => {
+                console.log("RESP", resp)
+                if (resp.data.isValidEmail == 1) return true
+                else return false
+            })
+            .catch(err => {
+                console.log(err)
+                return 'error'
+            })
+        console.log("VALIDATION", validation)
+
+        if (!validation) {
+            Alert.alert(
+                'Email already registered',
+                email,
+                [{ text: 'OK' }],
+                { cancelable: false },
+            );
+        }
+        else if (validation === 'error') {
+            Alert.alert(
+                'Issue connecting to server',
+                'Please try again later',
+                [{ text: 'OK' }],
+                { cancelable: false },
+            );
+        }
+
+        return validation;
     }
 
 
@@ -174,14 +208,19 @@ export default class Profile extends React.Component {
 
         // Add email accounts
         for (var i = 0; i < arr.length; i++) {
+
             try {
-                await axios.post(`${constants.BASE_URL}/users/profile/email?registeredProfileEmail=${this.state.oldEmail}&userProfileId=${await AsyncStorage.getItem('userProfileId')}&newEmail=${arr[i]}`, {}, { headers: { 'Authorization': token } })
-                    .then(resp => {
-                        console.log(resp.data)
-                    })
+                let validated = await this.validateNewEmail(arr[i]);
+                console.log("ADDING EMAIL", arr[i])
+                if (validated) {
+                    await axios.post(`${constants.BASE_URL}/users/profile/email?registeredProfileEmail=${this.state.oldEmail}&userProfileId=${userProfileId}}&newEmail=${arr[i]}`, {}, { headers: { 'Authorization': token } })
+                        .then(resp => {
+                            console.log('Additional email created', resp.data)
+                        })
+                }
 
             }
-            catch { err => console.log(err) }
+            catch { err => console.log('Error adding additional email(s)', err) }
         }
 
         this.getProfile();
@@ -258,6 +297,7 @@ export default class Profile extends React.Component {
                             })
                             .catch(err => console.log("Error deleting user sector when switching account type", err))
                     }
+                    AsyncStorage.setItem('refresh', true)
                 }
             },
             { text: 'Cancel' }],
@@ -301,163 +341,193 @@ export default class Profile extends React.Component {
 
     }
 
+    onShare = async () => {
+        try {
+            const result = await Share.share({
+                message: 'LA Cyber Lab | This App is designed to verify email compromise.',
+                url: 'https://www.lacyberlab.org'
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
     render() {
 
         const { emails } = this.state
 
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
-<View style={{flex:1}}>
-                <View style={[this.state.loading || !this.state.connection && { opacity: .5 }, { flex: 1 }]}>
-                    <View style={style.header}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Text style={style.h1}>My Account</Text>
-                            <Icon name='bell' color='#fff' size={30} />
-                        </View>
-                        <Text style={style.h6}>Set up your account</Text>
-                    </View>
-                    <View style={[style.body, { flex: 1 }]}>
-                        <ScrollView showsVerticalScrollIndicator={false}>
-                            <View style={{ marginBottom: 20 }}>
-                                <Text style={style.h3}>Profile Name</Text>
-                                <TouchableOpacity style={styles.info} onPress={() => this.firstName.focus()}>
-                                    <TextInput
-                                        ref={input => this.firstName = input}
-                                        placeholder="First Name"
-                                        placeholderTextColor="#707992"
-                                        style={[style.h5, { color: '#fff' }]}
-                                        value={this.state.firstName}
-                                        onChangeText={firstName => this.setState({ firstName })}
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.info} onPress={() => this.lastName.focus()}>
-                                    <TextInput
-                                     placeholder="Last Name"
-                                     placeholderTextColor="#707992"
-                                        ref={input => this.lastName = input}
-                                        style={[style.h5, { color: '#fff' }]}
-                                        value={this.state.lastName}
-                                        onChangeText={lastName => this.setState({ lastName })}
-                                    />
-                                </TouchableOpacity>
+                <View style={{ flex: 1 }}>
+                    <View style={[this.state.loading || !this.state.connection && { opacity: .5 }, { flex: 1 }]}>
+                        <View style={style.header}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={style.h1}>My Account</Text>
+                                <Icon name='bell' color='#fff' size={30} />
                             </View>
+                            <Text style={style.h6}>Set up your account</Text>
+                        </View>
+                        <View style={[style.body, { flex: 1 }]}>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                <View style={{ marginBottom: 20 }}>
+                                    <Text style={style.h3}>Profile Name</Text>
+                                    <TouchableOpacity style={styles.info} onPress={() => this.firstName.focus()}>
+                                        <TextInput
+                                            ref={input => this.firstName = input}
+                                            placeholder="First Name"
+                                            placeholderTextColor="#707992"
+                                            style={[style.h5, { color: '#fff' }]}
+                                            value={this.state.firstName}
+                                            onChangeText={firstName => this.setState({ firstName })}
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.info} onPress={() => this.lastName.focus()}>
+                                        <TextInput
+                                            placeholder="Last Name"
+                                            placeholderTextColor="#707992"
+                                            ref={input => this.lastName = input}
+                                            style={[style.h5, { color: '#fff' }]}
+                                            value={this.state.lastName}
+                                            onChangeText={lastName => this.setState({ lastName })}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
 
-                            <View style={{ marginBottom: 20 }}>
-                                <Text style={style.h3}>Registered Emails</Text>
-                                <TouchableOpacity style={[styles.info, { alignItems: 'center', paddingVertical: 0 }]} onPress={() => this.email.focus()}>
-                                    {!this.state.verified && <TouchableOpacity onPress={() => this.handleEmailVerification(this.state.email)} rejectResponderTermination hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}><Text style={{ fontWeight: 'bold', fontSize: 22, color: 'red', paddingRight: 5 }}>!</Text></TouchableOpacity>}
-                                    <Input
-                                        ref={input => this.email = input}
-                                        inputStyle={[style.p, { color: '#fff' }]}
-                                        containerStyle={{ flex: 1, paddingHorizontal: 0 }}
-                                        inputContainerStyle={{ borderBottomWidth: 0 }}
-                                        placeholder={this.state.oldEmail}
-                                        placeholderTextColor='#707992'
-                                        autoCapitalize='none'
-                                        onChangeText={email => this.setState({ email })}
-                                    />
-                                    {/* <Text style={style.p}>Edit Email</Text> */}
-                                </TouchableOpacity>
-                                <Text style={{ display: this.state.error ? 'flex' : 'none', color: 'red', fontSize: 12, marginVertical: 5 }}>Please enter a valid email address</Text>
-                                {/* Additional user emails */}
-                                {emails.map((item, i) => (
-                                    <TouchableOpacity key={i} style={[styles.info, { alignItems: 'center', paddingVertical: 0 }]} >
-                                        {/* {console.log("ITEM", item)} */}
-                                        <TouchableOpacity rejectResponderTermination hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}>
-                                            {(item.registeredEmail && !item.verified) && <Text onPress={() => this.handleEmailVerification(item.registeredEmail)} style={{ fontWeight: 'bold', fontSize: 22, color: 'red', paddingRight: 5 }}>!</Text>}
-                                        </TouchableOpacity>
+                                <View style={{ marginBottom: 20 }}>
+                                    <Text style={style.h3}>Registered Emails</Text>
+                                    <TouchableOpacity style={[styles.email, { alignItems: 'center', paddingVertical: 0 }]} onPress={() => this.email.focus()}>
                                         <Input
-                                            placeholder={item.registeredEmail || 'Enter Email Address'}
-                                            placeholderTextColor='#707992'
-                                            inputStyle={[style.p, { color: '#fff' }]}
+                                            ref={input => this.email = input}
+                                            inputStyle={[style.p, { color: '#fff', fontSize: 16 }]}
                                             containerStyle={{ flex: 1, paddingHorizontal: 0 }}
                                             inputContainerStyle={{ borderBottomWidth: 0 }}
+                                            placeholder={this.state.oldEmail}
+                                            placeholderTextColor='#fff'
                                             autoCapitalize='none'
-                                            onChangeText={email => { [item.registeredEmail ? this.state.emails[i].registeredEmail = email : this.state.emails[i] = email, this.setState({ render: !this.state.render })] }}
-                                            style={{ color: '#fff' }}
-                                            errorMessage={this.state.errors[i]}
-                                            errorStyle={{ marginTop: 0 }}
+                                            onChangeText={email => this.setState({ email })}
                                         />
-                                        <TouchableOpacity rejectResponderTermination hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }} onPress={() => item.registeredEmail ? this.deleteEmail(item.registeredEmail, i) : [this.state.emails.splice(i, 1), this.setState({ render: !this.state.render })]}><IconFeather name='x-circle' color='#fa4969' size={15} style={{ opacity: .6 }} /></TouchableOpacity>
                                     </TouchableOpacity>
+                                    <Text style={{ display: this.state.error ? 'flex' : 'none', color: 'red', fontSize: 12, marginVertical: 5 }}>Please enter a valid email address</Text>
 
-                                ))}
-                                <TouchableOpacity style={{ flexDirection: 'row', paddingVertical: 15 }} onPress={this.state.emails[this.state.emails.length - 1] !== 'Enter email address' && this.addEmail.bind(this)}>
-                                    <Icon name='plus-circle' color='#fa4969' size={15} style={{ marginRight: 5 }} />
-                                    <Text style={{ color: '#fa4969', fontSize: 12, fontWeight: '500' }}>ADD ANOTHER EMAIL</Text>
-                                </TouchableOpacity>
-                            </View>
+                                    {/* Additional user emails */}
+                                    {emails.map((item, i) => (
+                                        <TouchableOpacity key={i} style={[styles.info, { alignItems: 'center', paddingVertical: 0 }]} >
+                                            <Input
+                                                placeholder={item.registeredEmail || 'Enter Email Address'}
+                                                placeholderTextColor='#707992'
+                                                inputStyle={[style.p, { color: '#fff' }]}
+                                                containerStyle={{ flex: 1, paddingHorizontal: 0 }}
+                                                inputContainerStyle={{ borderBottomWidth: 0 }}
+                                                autoCapitalize='none'
+                                                onChangeText={email => { [item.registeredEmail ? this.state.emails[i].registeredEmail = email : this.state.emails[i] = email, this.setState({ render: !this.state.render })] }}
+                                                style={{ color: '#fff' }}
+                                                errorMessage={this.state.errors[i]}
+                                                errorStyle={{ marginTop: 0 }}
+                                            />
+                                            {(item.registeredEmail && !item.verified) && <Button
+                                                title='Verify Again'
+                                                titleStyle={{ fontSize: 10, fontWeight: 'bold' }}
+                                                buttonStyle={[style.button, { alignSelf: 'center', padding: 5, margin: 5, width: 80, height: 30 }]}
+                                                onPress={() => this.handleEmailVerification(item.registeredEmail)}
+                                            />
+                                            }
+                                            <TouchableOpacity rejectResponderTermination hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }} onPress={() => item.registeredEmail ? this.deleteEmail(item.registeredEmail, i) : [this.state.emails.splice(i, 1), this.setState({ render: !this.state.render })]}><IconFeather name='x-circle' color='#fa4969' size={15} style={{ opacity: .6 }} /></TouchableOpacity>
+                                        </TouchableOpacity>
 
-                            <View style={{ marginBottom: 20 }}>
-                                <Text style={style.h3}>Settings</Text>
-
-                                {this.state.accountType === 'business' ?
-                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeIndustries', { sectorIds: this.state.sectorIds, onGoBack: this.refresh })}>
-                                        <View style={styles.info}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                <Icon name='building' color='#f5bd00' size={20} style={{ marginRight: 5 }} />
-                                                <Text style={style.h5}>Industries  <IconMaterial onPress={() => this.switchAccountType()} name='account-switch' color='#fff' size={18} /></Text>
-                                            </View>
-                                            <Text style={style.p}>{this.state.sectorIds.length} Selected  <Icon name='angle-right' color='#fa4969' size={15} /></Text>
-                                        </View>
+                                    ))}
+                                    <TouchableOpacity style={{ flexDirection: 'row', paddingVertical: 15 }} onPress={this.state.emails[this.state.emails.length - 1] !== 'Enter email address' && this.addEmail.bind(this)}>
+                                        <Icon name='plus-circle' color='#fa4969' size={15} style={{ marginRight: 5 }} />
+                                        <Text style={{ color: '#fa4969', fontSize: 12, fontWeight: '500' }}>ADD ANOTHER EMAIL</Text>
                                     </TouchableOpacity>
-                                    :
-                                    <TouchableOpacity>
-                                        <View style={styles.info}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                <Icon name='building' color='#f5bd00' size={20} style={{ marginRight: 5 }} />
-                                                <Text style={style.h5}>Personal  <IconMaterial onPress={() => this.switchAccountType()} name='account-switch' color='#fff' size={18} /></Text>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                }
-
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangePassword')}>
-                                    <View style={styles.info}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Icon name='lock' color='#49fa69' size={20} style={{ marginRight: 5 }} />
-                                            <Text style={style.h5}> Change Password</Text>
-                                        </View>
-                                        <Icon name='angle-right' color='#fa4969' size={15} />
-                                    </View>
-                                </TouchableOpacity>
-
-                                <View style={styles.info}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <Icon name='share' color='#7d6eff' size={20} style={{ marginRight: 5 }} />
-                                        <Text style={style.h5}>Share</Text>
-                                    </View>
-                                    <Icon name='angle-right' color='#fa4969' size={15} />
                                 </View>
-                            </View>
 
-                            <View>
-                                <Button
-                                    title='Save'
-                                    titleStyle={{ fontSize: 14 }}
-                                    buttonStyle={[style.button, { alignSelf: 'center' }]}
-                                    onPress={() => this.setState({ errors: [] }, this.updateUser.bind(this))}
-                                // disabled={this.state.loading}
-                                />
-                                <Button
-                                    title='Sign Out'
-                                    titleStyle={{ fontSize: 14 }}
-                                    buttonStyle={[style.button, { alignSelf: 'center' }]}
-                                    onPress={this.logout.bind(this)}
-                                />
-                            </View>
-                        </ScrollView>
-                    </View>
+                                <View style={{ marginBottom: 20 }}>
+                                    <Text style={style.h3}>Settings</Text>
 
-                </View>
-                <View style={{ height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', textAlign: 'center' }}>
-                    <ActivityIndicator animating={this.state.loading} size="large" color="#fff" />
-                    {!this.state.connection &&
-                        <View style={{ backgroundColor: 'rgba(0,0,0,0.3)', marginHorizontal: 50, padding: 10, borderRadius: 10 }}>
-                            <Text style={{ textAlign: 'center' }}>There was a problem fetching your profile data. Please try again later</Text>
+                                    {this.state.accountType === 'business' ?
+                                        <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeIndustries', { sectorIds: this.state.sectorIds, onGoBack: this.refresh })}>
+                                            <View style={styles.info}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Icon name='building' color='#f5bd00' size={20} style={{ marginRight: 5 }} />
+                                                    <Text style={style.h5}>Industries  </Text>
+                                                    <TouchableOpacity rejectResponderTermination hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }} onPress={() => this.switchAccountType()}>
+                                                        <IconMaterial name='account-switch' color='#fff' size={20} />
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <Text style={style.p}>{this.state.sectorIds.length} Selected  <Icon name='angle-right' color='#fa4969' size={15} /></Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        :
+                                        <TouchableOpacity>
+                                            <View style={styles.info}>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Icon name='building' color='#f5bd00' size={20} style={{ marginRight: 5 }} />
+                                                    <Text style={style.h5}>Personal </Text>
+                                                    <View>
+                                                        <IconMaterial rejectResponderTermination hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }} onPress={() => this.switchAccountType()} name='account-switch' color='#fff' size={20} />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                    }
+
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangePassword')}>
+                                        <View style={styles.info}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <Icon name='lock' color='#49fa69' size={20} style={{ marginRight: 5 }} />
+                                                <Text style={style.h5}> Change Password</Text>
+                                            </View>
+                                            <Icon name='angle-right' color='#fa4969' size={15} />
+                                        </View>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity onPress={this.onShare}>
+                                        <View style={styles.info}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <Icon name='share' color='#7d6eff' size={20} style={{ marginRight: 5 }} />
+                                                <Text style={style.h5}>Share</Text>
+                                            </View>
+                                            <Icon name='angle-right' color='#fa4969' size={15} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View>
+                                    <Button
+                                        title='Save'
+                                        titleStyle={{ fontSize: 14 }}
+                                        buttonStyle={[style.button, { alignSelf: 'center' }]}
+                                        onPress={() => this.setState({ errors: [] }, this.updateUser.bind(this))}
+                                    />
+                                    <Button
+                                        title='Sign Out'
+                                        titleStyle={{ fontSize: 14 }}
+                                        buttonStyle={[style.button, { alignSelf: 'center' }]}
+                                        onPress={this.logout.bind(this)}
+                                    />
+                                </View>
+                            </ScrollView>
                         </View>
-                    }
-                </View>
+
+                    </View>
+                    <View style={{ height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', textAlign: 'center' }}>
+                        <ActivityIndicator animating={this.state.loading} size="large" color="#fff" />
+                        {!this.state.connection &&
+                            <View style={{ backgroundColor: 'rgba(0,0,0,0.3)', marginHorizontal: 50, padding: 10, borderRadius: 10 }}>
+                                <Text style={{ textAlign: 'center' }}>There was a problem fetching your profile data. Please try again later</Text>
+                            </View>
+                        }
+                    </View>
                 </View>
             </TouchableWithoutFeedback >
 
@@ -466,6 +536,13 @@ export default class Profile extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    email: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10,
+        borderBottomWidth: 2,
+        borderBottomColor: '#333957'
+    },
     info: {
         flexDirection: 'row',
         justifyContent: 'space-between',

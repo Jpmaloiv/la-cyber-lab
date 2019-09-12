@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "LACyberLab",
+    "name": "LA Cyber Lab",
     "slug": "LACyberLab",
     "privacy": "unlisted",
     "sdkVersion": "34.0.0",
@@ -15,7 +15,7 @@
       "android",
       "web"
     ],
-    "version": "0.2",
+    "version": "0.4",
     "orientation": "portrait",
     "icon": "./assets/images/logosmall.png",
     "splash": {
@@ -37,12 +37,12 @@
         "NSLocationWhenInUseUsageDescription": "LA Cyber Labs needs your location to find threats near you."
       },
       "bundleIdentifier": "com.lacyberlab.lacyberlab",
-      "buildNumber": "4",
+      "buildNumber": "1",
       "supportsTablet": false
     },
     "android": {
       "package": "com.lacyberlab.lacyberlab",
-      "versionCode":2,
+      "versionCode": 2,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAPgLN6KhsviVOXybjygwCviqMYtXUQoxM"

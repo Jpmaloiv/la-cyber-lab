@@ -1,13 +1,13 @@
 
 import React, { Component } from 'react';
 import constants from '../../../constants'
-import { Alert,  Text,Keyboard, TouchableOpacity,TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Text, Keyboard, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import IconFeather from 'react-native-vector-icons/Feather'
 import style from '../../../style'
 import axios from 'axios';
-import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
 
 export default class CreateAccount extends Component {
@@ -50,6 +50,7 @@ export default class CreateAccount extends Component {
                 [{ text: 'OK' }],
                 { cancelable: false },
             );
+            this.confirmEmail.clear()
         }
         else if (validation === 'error') {
             Alert.alert(
@@ -58,11 +59,11 @@ export default class CreateAccount extends Component {
                 [{ text: 'OK' }],
                 { cancelable: false },
             );
+            this.confirmEmail.clear()
         }
         else {
             this.setState({ validation: true })
         }
-        this.confirmEmail.clear()
     }
 
     // Checks if email addresses match, navigates to next screen
@@ -92,71 +93,71 @@ export default class CreateAccount extends Component {
 
                 <KeyboardAwareScrollView enableOnAndroid accessible={false} >
                 <View style={[style.body, { flex: 1, paddingBottom: 25 }]} behavior='height' enabled>
-                <View style={{ marginBottom: 15 }}>
-                    <Text style={style.h1}>Let's Create</Text>
-                    <Text style={style.h1}>Your Account</Text>
-                </View>
-                <View >
-                    <Input
-                        ref={input => this.firstName = input}
-                        containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
-                        inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
-                        inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
-                        placeholder='First Name'
-                        placeholderTextColor='#707992'
-                        onFocus={() => this.setState({ focusFn: true })}
-                        onBlur={() => this.setState({ focusFn: false })}
-                        onChangeText={firstName => this.setState({ firstName })}
-                        rightIcon={<TouchableOpacity style={!(this.state.firstName && this.state.focusFn) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ firstName: null }, this.firstName.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
-                    />
-                    <Input
-                        ref={input => this.lastName = input}
-                        containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
-                        inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }} asd
-                        inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
-                        placeholder='Last Name'
-                        placeholderTextColor='#707992'
-                        onFocus={() => this.setState({ focusLn: true })}
-                        onBlur={() => this.setState({ focusLn: false })}
-                        onChangeText={lastName => this.setState({ lastName })}
-                        rightIcon={<TouchableOpacity style={!(this.state.lastName && this.state.focusLn) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ lastName: null }, this.lastName.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
-                    />
+                    <View style={{ marginBottom: 15 }}>
+                        <Text style={style.h1}>Let's Create</Text>
+                        <Text style={style.h1}>Your Account</Text>
+                    </View>
+                    <View >
+                        <Input
+                            ref={input => this.firstName = input}
+                            containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
+                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
+                            inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
+                            placeholder='First Name'
+                            placeholderTextColor='#707992'
+                            onFocus={() => this.setState({ focusFn: true })}
+                            onBlur={() => this.setState({ focusFn: false })}
+                            onChangeText={firstName => this.setState({ firstName })}
+                            rightIcon={<TouchableOpacity style={!(this.state.firstName && this.state.focusFn) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ firstName: null }, this.firstName.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
+                        />
+                        <Input
+                            ref={input => this.lastName = input}
+                            containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
+                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }} asd
+                            inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
+                            placeholder='Last Name'
+                            placeholderTextColor='#707992'
+                            onFocus={() => this.setState({ focusLn: true })}
+                            onBlur={() => this.setState({ focusLn: false })}
+                            onChangeText={lastName => this.setState({ lastName })}
+                            rightIcon={<TouchableOpacity style={!(this.state.lastName && this.state.focusLn) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ lastName: null }, this.lastName.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
+                        />
 
-                    <Input
-                        containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
-                        inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
-                        inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
-                        placeholder='Enter Email Address'
-                        placeholderTextColor='#707992'
-                        autoCapitalize='none'
-                        onChangeText={email => this.setState({ email, validation: false })}
-                        rightIcon={/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email) && <TouchableOpacity><IconAnt name='checkcircleo' color='#f5bd00' size={18} style={{ paddingRight: 15 }} /></TouchableOpacity>}
-                    />
-                    <Input
-                        ref={input => this.confirmEmail = input}
-                        containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
-                        inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
-                        inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
-                        placeholder='Confirm Email Address'
-                        placeholderTextColor='#707992'
-                        autoCapitalize='none'
-                        onChangeText={(confirmEmail) => { this.state.validation && this.state.email ? this.setState({ confirmEmail }) : this.validateNewEmail() }}
-                        rightIcon={/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.confirmEmail) && <TouchableOpacity><IconAnt name='checkcircleo' color='#f5bd00' size={18} style={{ paddingRight: 15 }} /></TouchableOpacity>}
-                        errorMessage={this.state.error}
-                    />
-                </View>
+                        <Input
+                            containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
+                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
+                            inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
+                            placeholder='Enter Email Address'
+                            placeholderTextColor='#707992'
+                            autoCapitalize='none'
+                            onChangeText={email => this.setState({ email, validation: false })}
+                            rightIcon={/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email) && <TouchableOpacity><IconAnt name='checkcircleo' color='#f5bd00' size={18} style={{ paddingRight: 15 }} /></TouchableOpacity>}
+                        />
+                        <Input
+                            ref={input => this.confirmEmail = input}
+                            containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
+                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
+                            inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
+                            placeholder='Confirm Email Address'
+                            placeholderTextColor='#707992'
+                            autoCapitalize='none'
+                            onChangeText={(confirmEmail) => { this.state.validation && this.state.email ? this.setState({ confirmEmail }) : this.validateNewEmail() }}
+                            rightIcon={/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.confirmEmail) && <TouchableOpacity><IconAnt name='checkcircleo' color='#f5bd00' size={18} style={{ paddingRight: 15 }} /></TouchableOpacity>}
+                            errorMessage={this.state.error}
+                        />
+                    </View>
 
 
-                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                    <Button
-                        title="NEXT"
-                        titleStyle={{ fontSize: 15, fontWeight: '900' }}
-                        buttonStyle={[style.button, { height: 55, width: '100%', alignSelf: 'center' }]}
-                        onPress={this.next.bind(this)}
-                        disabled={!this.state.firstName || !this.state.lastName || !this.state.email || !this.state.confirmEmail}
-                        disabledStyle={{ backgroundColor: '#fa496975' }}
-                    />
-                </View>
+                    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                        <Button
+                            title="NEXT"
+                            titleStyle={{ fontSize: 15, fontWeight: '900' }}
+                            buttonStyle={[style.button, { height: 55, width: '100%', alignSelf: 'center' }]}
+                            onPress={this.next.bind(this)}
+                            disabled={!this.state.firstName || !this.state.lastName || !this.state.email || !this.state.confirmEmail}
+                            disabledStyle={{ backgroundColor: '#fa496975' }}
+                        />
+                    </View>
                 </View>
             </KeyboardAwareScrollView>
         );

@@ -85,7 +85,8 @@ const VerificationStack = createStackNavigator({
   })
 
 const HomeStack = createStackNavigator({
-  Home
+  Home,
+  RecommendationActions
 }, {
     defaultNavigationOptions: {
       headerStyle: {
