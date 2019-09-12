@@ -33,7 +33,8 @@ import Feed from './src/components/Pages/Feed'
 import Profile from './src/components/Pages/Profile'
 
 import Recommendations from './src/components/Pages/Recommendations'
-
+import store from './src/redux/store';
+import { Provider } from "react-redux";
 
 // Base URL endpoint and auth token
 // global.BASE_URL = 'http://la-cyberlab-dev.herokuapp.com'
@@ -409,7 +410,10 @@ class App extends React.Component {
   render() {
 
     return (
-      <View style={style.app}>
+      <Provider
+      store={store}>
+     
+     <View style={style.app}>
         <StatusBar barStyle="light-content" />
         <AppContainer ref={nav => { this.navigator = nav; }} />
         <NotificationPopup
@@ -417,6 +421,8 @@ class App extends React.Component {
           renderPopupContent={renderCustomPopup}
         />
       </View>
+      </Provider>
+      
     )
   }
 }

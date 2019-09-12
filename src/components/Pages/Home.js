@@ -14,6 +14,8 @@ import * as scale from 'd3-scale'
 import * as shape from 'd3-shape'
 import moment from 'moment'
 import dateFns from 'date-fns'
+import {connect}from "react-redux"
+import {rss} from "../../redux/actions"
 import * as rssParser from 'react-native-rss-parser';
 import Svg, { Circle, Defs, Ellipse, LinearGradient, Path, Stop } from 'react-native-svg'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
@@ -40,7 +42,7 @@ const LineCritical = ({ line }) => (
     />
 )
 
-export default class Home extends React.Component {
+ class Home extends React.Component {
     constructor() {
         super()
         this.state = {
@@ -76,6 +78,7 @@ export default class Home extends React.Component {
         })
     }
     componentWillMount() {
+        this.props.rss()
         this.fetchGraphData();
     }
 
@@ -1023,3 +1026,4 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
 });
+export default connect(null,{rss})(Home)

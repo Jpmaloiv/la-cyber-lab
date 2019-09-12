@@ -1,13 +1,13 @@
 import React from 'react'
 import { ActivityIndicator, FlatList, Image, Text, ScrollView, StyleSheet, View } from 'react-native'
 import { Divider } from 'react-native-elements'
-import * as rssParser from 'react-native-rss-parser';
 import HTMLView from 'react-native-htmlview';
 import moment from 'moment'
+import {connect} from "react-redux"
 import style from '../../../style'
 
 
-export default class Feed extends React.Component {
+ class Feed extends React.Component {
     constructor() {
         super()
         this.state = {
@@ -16,19 +16,10 @@ export default class Feed extends React.Component {
         }
     }
 
-    componentDidMount() {
-        return fetch('https://www.us-cert.gov/ncas/all.xml')
-            .then((response) => response.text())
-            .then((responseData) => rssParser.parse(responseData))
-            .then((rss) => {
-                console.log(rss.items)
-                this.setState({ rss: rss.items, loading: false })
-            });
-    }
 
     filterHTML(desc) {
         const filteredDesc = desc.replace(' ', '').replace('<br/>', '').replace('<br />', '')
-        console.log(filteredDesc)
+        // console.log(filteredDesc)÷
         return filteredDesc
     }
 
@@ -40,16 +31,18 @@ export default class Feed extends React.Component {
             require('../../../assets/images/stock/2.jpg'),
             require('../../../assets/images/stock/3.jpg')
         ]
-
+// console.log(this.props.rss)
         return (
+    
             <View style={{ flex: 1 }}>
-                <View style={style.header}>
+               <View style={style.header}>
                     <Text style={style.h1}>News Feed</Text>
                     <Text style={style.h4}>Read the latest cyber threat news</Text>
                 </View>
-                <View>
-                    <FlatList
-                        data={this.state.rss}
+                 {  !this.props.loading ?<View>
+                  <FlatList
+                        data={this.props.rss}
+                        maxToRenderPerBatch={3}
                         renderItem={({ item, index }) => <View key={index}>
                             <View style={[style.body, { marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }]}>
                                 <View>
@@ -70,9 +63,9 @@ export default class Feed extends React.Component {
                         </View>}
                     />
                 </View>
-                <View style={{ height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', textAlign: 'center' }}>
-                    <ActivityIndicator animating={this.state.loading} size="large" color="#fff" />
-                </View>
+               :<View style={{ height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', textAlign: 'center' }}>
+                    <ActivityIndicator animating={true} size="large" color="#fff" />
+                </View>}
             </View>
         )
     }
@@ -91,3 +84,10 @@ const richTextStyles = StyleSheet.create({
         marginBottom: -70
     }
 })
+const mapStateToProps = state=>{
+    return{
+        rss:state.feed.rss,
+        loading:state.feed.loading
+    }
+}
+export default connect(mapStateToProps, null)(Feed)
