@@ -24,7 +24,7 @@ export default class Email extends React.Component {
                 <Image source={item.src} style={{marginBottom: 5}} />
                 <View style={{ alignItems: 'center' }}>
                     <Text style={{ color: '#707992', fontSize: 20, fontWeight: 'bold', marginBottom: 2 }}>STEP {index + 1}</Text>
-                    <Text numberOfLines={2} style={{  textAlign: 'center', fontSize: 15, lineHeight: 20 }}>{item.desc}</Text>
+                    <Text numberOfLines={2} style={{ maxWidth: '70%', textAlign: 'center', fontSize: 15, lineHeight: 20 }}>{item.desc}</Text>
                 </View>
             </View>
         )
@@ -77,6 +77,7 @@ export default class Email extends React.Component {
 
         ]).start();
     }
+    
 
 
     render() {
@@ -93,15 +94,15 @@ export default class Email extends React.Component {
         const entries = [
             {
                 src: require('../../../assets/images/how-it-works_1.png'),
-                desc: 'Send suspicious emails to LA Cyber Lab'
+                desc: 'User forwards suspicious email to LA Cyber Lab'
             },
             {
                 src: require('../../../assets/images/how-it-works_2.png'),
-                desc: 'LA Cyber Lab will examine the contents of your email'
+                desc: 'User-submitted emails will be checked for known malicious content'
             },
             {
                 src: require('../../../assets/images/how-it-works_3.png'),
-                desc: 'LA Cyber Lab will send you a report about your email'
+                desc: 'User will receive a response about their email'
 
             }
         ]

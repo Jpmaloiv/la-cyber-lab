@@ -33,14 +33,7 @@ import Feed from './src/components/Pages/Feed'
 import Profile from './src/components/Pages/Profile'
 
 import Recommendations from './src/components/Pages/Recommendations'
-
-
-// Base URL endpoint and auth token
-// global.BASE_URL = 'http://la-cyberlab-dev.herokuapp.com'
-// global.AUTHORIZATION_TOKEN = 'bearer 12345'
-
-// let verifyLink= Linking.makeUrl('verify/email')
-// console.log("VERIFY LINK", verifyLink)
+import RecommendationActions from './src/components/Pages/RecommendationActions'
 
 
 // Navigation
@@ -84,7 +77,8 @@ const VerificationStack = createStackNavigator({
   })
 
 const HomeStack = createStackNavigator({
-  Home
+  Home,
+  RecommendationActions
 }, {
     defaultNavigationOptions: {
       headerStyle: {

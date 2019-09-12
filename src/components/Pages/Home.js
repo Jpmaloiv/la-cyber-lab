@@ -1,21 +1,18 @@
 import React from 'react'
 import constants from '../../../constants'
-import { ActivityIndicator, AsyncStorage, Dimensions, Image, ImageBackground, Linking, Text, RefreshControl, Platform, Picker, ScrollView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, AsyncStorage, Dimensions, Image, ImageBackground, Linking, Text, RefreshControl, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ButtonGroup, Divider, Button } from 'react-native-elements'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { Dropdown } from 'react-native-material-dropdown'
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import Geolocation from '@react-native-community/geolocation';
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions';
 import axios from 'axios';
-import { AreaChart, Grid, StackedAreaChart, XAxis, YAxis } from 'react-native-svg-charts'
-import * as scale from 'd3-scale'
+import { AreaChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
 import moment from 'moment'
-import dateFns from 'date-fns'
 import * as rssParser from 'react-native-rss-parser';
-import Svg, { Circle, Defs, Ellipse, LinearGradient, Path, Stop } from 'react-native-svg'
+import { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import style from '../../../style'
 
@@ -60,7 +57,7 @@ export default class Home extends React.Component {
             showLabel: true,
             activeSector: 1,
             loading: true,
-            rss: {},
+            rss: [{title: '', links: [{url: ''}, {url: ''}]}, {title: '', links: [{url: ''}, {url: ''}]}],
             tracksViewChanges: true,
             alertLevel: ''
         }
@@ -126,7 +123,7 @@ export default class Home extends React.Component {
             .then((responseData) => rssParser.parse(responseData))
             .then((rss) => {
                 // console.log(rss.items)
-                this.setState({ rss: rss.items[0] })
+                this.setState({ rss: rss.items })
             });
 
         // if (Platform.OS === 'android' && Constants.isDevice) {
@@ -135,7 +132,7 @@ export default class Home extends React.Component {
         //         errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
         //     });
         // } else {
-            this._getLocationAsync();
+        this._getLocationAsync();
         // }
     }
 
@@ -149,8 +146,8 @@ export default class Home extends React.Component {
         }
 
         let location = await Location.getCurrentPositionAsync({});
-         if (Platform.OS !=="ios") 
-         console.log("Location android",location)
+        if (Platform.OS !== "ios")
+            console.log("Location android", location)
 
 
         this.setState({ location });
@@ -351,49 +348,62 @@ export default class Home extends React.Component {
         let alertLevel = this.state.alertLevel.toLowerCase()
         console.log("Threat alert level:", alertLevel)
 
+        let src, desc
+
         switch (alertLevel) {
-            case 'low': return <Image source={require('../../../assets/images/threat-low.png')} />
-            case 'guarded': return <Image source={require('../../../assets/images/threat-guarded.png')} />
-            case 'critical': return <Image source={require('../../../assets/images/threat-critical.png')} />
-            case 'elevated': return <Image source={require('../../../assets/images/threat-elevated.png')} />
-            case 'severe': return <Image source={require('../../../assets/images/threat-severe.png')} />
+            case 'low': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-low.png')} />
+                desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#73ae57', fontWeight: 'bold' }}>LOW </Text>indicates a low risk. No unusual activity exists beyond the normal concern for known hacking activities, known viruses, or other malicious activity.</Text>
+                break;
+            case 'guarded': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-guarded.png')} />
+                desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#2c91b3', fontWeight: 'bold' }}>GUARDED </Text>indicates a general risk of increased hacking, virus, or other malicious activity.</Text>
+                break;
+            case 'elevated': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-elevated.png')} />
+                desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#ecde29', fontWeight: 'bold' }}>ELEVATED </Text>indicates a significant risk due to increased hacking, virus, or other malicious activity that compromises systems or diminishes service.</Text>
+                break;
+            case 'high': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-high.png')} />
+                desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#f37043', fontWeight: 'bold' }}>HIGH </Text>indicates a high risk of increased hacking, virus, or other malicious cyber activity that targets core/critical infrastructure to cause multiple service outages and system compromises.</Text>
+                break;
+            case 'severe': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-severe.png')} />
+                desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#d0122f', fontWeight: 'bold' }}>SEVERE </Text>indicates a severe risk of hacking, virus, or other malicious activity resulting in widespread outages and/or significantly destructive compromises to systems or critical infrastructure sectors.</Text>
+
         }
+
+        return (
+            <View style={{ margin: 25, flex: 1, justifyContent: 'space-between' }}>
+                <View>
+
+                    <Text style={{ color: '#707992', fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>Security State of Affairs</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={style.h3}>THREAT LEVEL</Text>
+                        {src}
+                    </View>
+                </View>
+                <Text>{desc}</Text>
+            </View>
+        )
 
     }
 
     renderItem({ item, index }) {
+        console.log("ITEM", item)
         return (
-            <View style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => this.state.alertLevel && this.props.navigation.navigate('RecommendationActions', { alertLevel: this.state.alertLevel })} style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
                 {index == 0 ?
                     <ImageBackground source={item.src} style={{ width: '100%', height: 200 }}>
-                        <View style={{ margin: 25 }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={style.h3}>THREAT LEVEL</Text>
-                                {this.renderAlertLevel()}
-
-                            </View>
-                            <Text style={{ color: '#707992', fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>Security State of Affairs</Text>
-                            {/* <Button
-                                    title='3 RECOMMENDATIONS'
-                                    titleStyle={{ fontSize: 12, fontWeight: 'bold' }}
-                                    buttonStyle={[style.button, { margin: 0 }]}
-                                    onPress={() => this.props.navigation.navigate('Recommendations', { alertLevel: this.state.alertLevel })}
-                                /> */}
-                        </View>
+                        {this.renderAlertLevel()}
                     </ImageBackground>
                     :
                     <View style={{ justifyContent: 'space-around', width: '100%', height: 180, backgroundColor: '#313961', padding: 15, paddingHorizontal: 25 }}>
                         <Text style={{ color: '#f5bd00', fontSize: 10, fontWeight: '900' }}>TIP OF THE DAY</Text>
-                        <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{this.state.rss.title}</Text>
-                        <Text numberOfLines={4} style={{ fontSize: 13, opacity: .8 }}>{this.state.rss.description}</Text>
+                        <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{item.title}</Text>
+                        <Text numberOfLines={4} style={{ fontSize: 13, opacity: .8 }}>{item.desc}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Button onPress={() => Linking.openURL(this.state.rss.links[0].url).catch((err) => console.log('An error occurred', err))} buttonStyle={[style.button, { width: 98, height: 25, padding: 0, margin: 0 }]} title='Read More ->' titleStyle={{ fontSize: 12, fontWeight: '900' }} />
-                            <Text style={{ opacity: .25, fontSize: 10, fontWeight: 'bold' }}>{moment(this.state.rss.published).format('ll').toUpperCase()}</Text>
+                            <Button onPress={() => Linking.openURL(item.link).catch((err) => console.log('An error occurred', err))} buttonStyle={[style.button, { width: 98, height: 25, padding: 0, margin: 0 }]} title='Read More ->' titleStyle={{ fontSize: 12, fontWeight: '900' }} />
+                            <Text style={{ opacity: .25, fontSize: 10, fontWeight: 'bold' }}>{item.date}</Text>
                         </View>
-
                     </View>
                 }
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -505,8 +515,6 @@ export default class Home extends React.Component {
                 }))
         }
 
-        // console.log("HERE", this.state.activeSector, this.state.sector1Critical, this.state.sector1Guarded, this.state.sector2Critical, this.state.sector2Guarded)
-
         return (
             <View style={{ flex: 1, width: '85%', alignSelf: 'center' }}>
                 <View style={{ flex: 1, height: 200, flexDirection: 'row', marginBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
@@ -578,19 +586,11 @@ export default class Home extends React.Component {
     }
 
     render() {
-        // console.log("STATE CHANGE", this.state.tracksViewChanges)
-        // console.log("CRIT", this.state.profileCritical)
-        // console.log("CRITICAL", this.state.globalCritical)
-        // console.log("GUARDED", this.state.globalGuarded) 
 
-        const dataTest = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
-        const dataTest2 = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80].reverse()
-
-        // console.log("SECTOR CRITICAL", this.state.sectorCritical)
-
-
+        // ?
         if (this.state.globalGuarded.length > 0) this.state.globalGuarded[1].reportRiskCount = 40
-        // console.log(this.state.globalCritical)
+
+        console.log("RSS", this.state.rss[1])
 
         const entries = [
             {
@@ -599,12 +599,19 @@ export default class Home extends React.Component {
                 desc: 'Send suspicious emails to LA Cyber Lab'
             },
             {
-                title: 'HOW IT WORKS',
-                src: require('../../../assets/images/how-it-works_2.png'),
-                desc: 'LA Cyber Lab will examine the contents of your email'
+                title: this.state.rss[0].title,
+                desc: this.state.rss[0].description,
+                link: this.state.rss[0].links[0].url,
+                date: moment(this.state.rss[0].published).format('ll').toUpperCase()
             },
-            { test: 'test' }
+            {
+                title: this.state.rss[1].title,
+                desc: this.state.rss[1].description,
+                link: this.state.rss[1].links[0].url,
+                date: moment(this.state.rss[1].published).format('ll').toUpperCase()
+            },
         ]
+        
 
 
 
@@ -715,42 +722,6 @@ export default class Home extends React.Component {
                 }))
         }
 
-
-        // Example
-        const data = [
-            {
-                month: new Date(2015, 0, 1),
-                apples: 3840,
-                bananas: 1920,
-                cherries: 960,
-
-            },
-            {
-                month: new Date(2015, 1, 1),
-                apples: 1600,
-                bananas: 1440,
-            },
-            {
-                month: new Date(2015, 2, 1),
-                apples: 640,
-                bananas: 960,
-            },
-            {
-                month: new Date(2015, 3, 1),
-                apples: 3320,
-                bananas: 480,
-            },
-        ]
-
-        const colors = ['#8800cc', '#aa00ff', '#cc66ff', '#eeccff']
-        const keys = ['guarded', 'critical']
-        const svgs = [
-            { onPress: () => console.log('apples') },
-            { onPress: () => console.log('bananas') },
-            { onPress: () => console.log('cherries') },
-            { onPress: () => console.log('dates') },
-        ]
-
         const mapFilter = [{
             value: 'Last 30 Days'
         }, {
@@ -758,10 +729,6 @@ export default class Home extends React.Component {
         }, {
             value: 'Last 90 Days',
         }]
-
-        // console.log("DAYS", this.state.days)
-
-
 
         return (
 
@@ -791,7 +758,7 @@ export default class Home extends React.Component {
                         // inactiveSlideScale={0.75}
                         />
                         <Pagination
-                            dotsLength={2}
+                            dotsLength={entries.length}
                             activeDotIndex={this.state.activeSlide}
                             dotStyle={{
                                 width: 7,
@@ -843,6 +810,7 @@ export default class Home extends React.Component {
                         buttonStyle={{ width: 85, borderRadius: 25, borderColor: '#6e7892', borderWidth: 1 }}
                         selectedButtonStyle={{ backgroundColor: '#6e7892' }}
                     />
+                    <Text style={{ fontSize: 10 }}>{!this.state.loading && 'Count'}</Text>
                     {this.state.selectedIndex == 0 || this.state.selectedIndex == 2 ?
                         <View>
 
@@ -922,7 +890,7 @@ export default class Home extends React.Component {
                             <Text style={[style.h5, { alignSelf: 'center' }]}>{this.state.selectedIndex == 0 ? 'System Wide Results' : 'User-Submitted Results'}</Text>
                         </View>
                         :
-                        <View style={[style.body, { flex: 1, alignItems: 'center', marginTop: 0, paddingBottom: 0 }]}>
+                        <View style={[style.body, { flex: 1, alignItems: 'center', marginTop: 0, paddingVertical: 0 }]}>
                             <Carousel
                                 ref={ref => this.carouselRef = ref}
                                 data={entries}

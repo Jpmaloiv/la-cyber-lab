@@ -1,18 +1,25 @@
 
 import React from 'react';
 import constants from '../../../constants'
-import { Alert, AsyncStorage, Text, View, Keyboard, TouchableWithoutFeedback } from 'react-native'
+import { ActivityIndicator, AsyncStorage, Platform, Text, View, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import { Notifications } from 'expo';
-
+import Icon from 'react-native-vector-icons/Entypo';
 import { Button, Input } from 'react-native-elements'
+import * as Location from 'expo-location'
+import * as Permissions from 'expo-permissions';
 import axios from 'axios'
 import style from '../../../style'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default class LocationSelect extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { postalCode: '' }
+        this.state = { postalCode: '', loading: true }
+    }
+
+    componentDidMount() {
+        this._getLocationAsync();
     }
 
     // Creates and registers the user, then adds the industries they selected
@@ -78,33 +85,67 @@ export default class LocationSelect extends React.Component {
         }
     }
 
+    _getLocationAsync = async () => {
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+            this.setState({
+                errorMessage: 'Permission to access location was denied',
+            });
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        if (Platform.OS !== "ios")
+            console.log("Location android", location)
+
+
+        console.log("LOCATION", location)
+
+        let currLocation = await Location.reverseGeocodeAsync(location.coords)
+
+        this.setState({ activeZip: currLocation[0].postalCode, loading: false });
+
+
+    }
+
+
     render() {
 
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
 
-            <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
-                <Text style={style.h3}>Where are you located?</Text>
-                <Text style={style.h6}>Your Location</Text>
+                <View style={[style.body, { flex: 1, justifyContent: 'center' }]}>
+                    <Text style={style.h3}>Where are you located?</Text>
+                    <Text style={style.h6}>Your Location</Text>
 
-                <Input
-                    placeholder='Enter Zip Code'
-                    placeholderTextColor='#707992'
-                    inputStyle={{ color: '#fff' }}
-                    value={this.state.postalCode}
-                    maxLength={5}
-                    onChangeText={postalCode => this.setState({ postalCode })}
-                    errorMessage={this.state.error}
-                />
+                    <Input
+                        placeholder='Enter Zip Code'
+                        placeholderTextColor='#707992'
+                        inputStyle={{ color: '#fff' }}
+                        value={this.state.postalCode}
+                        maxLength={5}
+                        onChangeText={postalCode => this.setState({ postalCode })}
+                        errorMessage={this.state.error}
+                    />
+                    {!this.state.loading ?
+                        <TouchableOpacity onPress={() => this.setState({ postalCode: this.state.activeZip })} style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
+                            <Icon name='location' color='rgba(250,73,105,.5)' size={15} style={{ marginRight: 7 }} />
+                            <Text style={{ color: '#fa4969', fontWeight: 'bold' }}> Use your current location</Text>
+                        </TouchableOpacity>
+                        :
+                        <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
+                            <ActivityIndicator color="#fa4969" />
+                            <Text style={{ color: '#fa4969', fontWeight: 'bold' }}> Retrieving your location</Text>
+                        </View>
+                    }
 
-                <Button
-                    title="REGISTER"
-                    titleStyle={{ fontSize: 14 }}
-                    buttonStyle={[style.button, { alignSelf: 'center' }]}
-                    onPress={this.register.bind(this)}
-                />
-            </View>
-            </TouchableWithoutFeedback>
+                    <Button
+                        title="REGISTER"
+                        titleStyle={{ fontSize: 14 }}
+                        buttonStyle={[style.button, { alignSelf: 'center' }]}
+                        onPress={this.register.bind(this)}
+                    />
+                </View>
+            </TouchableWithoutFeedback >
         );
     }
 
