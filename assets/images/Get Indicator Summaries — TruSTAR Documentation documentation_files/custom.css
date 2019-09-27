@@ -1,0 +1,11 @@
+.wy-nav-content {
+    max-width: 65% !important;
+}
+
+.wy-table-responsive table td, .wy-table-responsive table th {
+    white-space: normal;
+}
+
+.wy-table-responsive table.break-words td {
+    word-break: break-all;
+}

@@ -1,6 +1,5 @@
 import React from 'react'
-import { Animated, Clipboard, Dimensions, Image, Text, TouchableOpacity, View } from 'react-native'
-import { Button } from 'react-native-elements'
+import { Animated, Clipboard, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import Icon from 'react-native-vector-icons/Feather';
 import style from '../../../style'
@@ -20,13 +19,13 @@ export default class Email extends React.Component {
 
     renderItem({ item, index }) {
         return (
-            <View style={{ alignItems: 'center' }}>
-                <Image source={item.src} style={{marginBottom: 5}} />
+            <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+                <Image source={item.src} style={{ marginBottom: 5 }} />
                 <View style={{ alignItems: 'center' }}>
-                    <Text style={{ color: '#707992', fontSize: 20, fontWeight: 'bold', marginBottom: 2 }}>STEP {index + 1}</Text>
-                    <Text numberOfLines={2} style={{ maxWidth: '70%', textAlign: 'center', fontSize: 15, lineHeight: 20 }}>{item.desc}</Text>
+                    <Text style={{ color: '#707992', fontSize: 20, fontWeight: 'bold', marginVertical: 10 }}>STEP {index + 1}</Text>
+                    <Text style={{ maxWidth: '70%', textAlign: 'center', fontSize: 15, lineHeight: 20 }}>{item.desc}</Text>
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 
@@ -77,7 +76,7 @@ export default class Email extends React.Component {
 
         ]).start();
     }
-    
+
 
 
     render() {
@@ -108,13 +107,13 @@ export default class Email extends React.Component {
         ]
 
         return (
-            <View style={{ flex: 1 }}>
-                <View style={[style.header, { alignItems: 'center',paddingTop:10,  paddingBottom:0,marginBottom:0}]}>
+            <ScrollView contentContainerStyle={{ flex: 1 }}>
+                <View style={[style.header, { alignItems: 'center', marginBottom: 0 }]}>
                     <Text style={style.h6}>Submit your emails to:</Text>
                     <Text style={style.h3}>{email}</Text>
 
                     <AnimatedButton
-                        style={[style.button, style.animatedButton, { backgroundColor, paddingBottom:0,marginBottom:0 }]}
+                        style={[style.buttonPadded, style.animatedButton, { backgroundColor, paddingBottom: 0, marginBottom: 0 }]}
                         onPress={() => this.copyToClipboard(email)}
                     >
                         <Animated.View style={{ flexDirection: 'row', opacity: this.state.fade1 }}>
@@ -128,20 +127,20 @@ export default class Email extends React.Component {
                     </AnimatedButton>
 
                 </View>
-                <View style={[style.body, { flex: 1, alignItems: 'center', marginTop: 0 }]}>
-                    <Text style={[style.h2, {marginBottom: 15}]}>HOW IT WORKS</Text>
+                <View style={[style.body, { flex: 1, backgroundColor: '#1f243f', alignItems: 'center', marginTop: 0, paddingBottom: 0 }]}>
+                    <Text style={[style.h2, { marginBottom: 15 }]}>HOW IT WORKS</Text>
                     <Carousel
                         ref={ref => this.carouselRef = ref}
                         data={entries}
                         renderItem={this.renderItem}
                         sliderWidth={this.state.sliderWidth}
-                        onSnapToItem={index => this.setState({ activeSlide: index})}
+                        onSnapToItem={index => this.setState({ activeSlide: index })}
                         itemWidth={this.state.sliderWidth}
-                        // inactiveSlideOpacity={0}
-                        // inactiveSlideScale={0.75}
+                    // inactiveSlideOpacity={0}
+                    // inactiveSlideScale={0.75}
                     />
-                    </View>
-                    <View>
+                </View>
+                <View>
                     <Pagination
                         dotsLength={entries.length}
                         activeDotIndex={this.state.activeSlide}
@@ -151,6 +150,7 @@ export default class Email extends React.Component {
                             borderRadius: 5,
                             backgroundColor: '#fa4969'
                         }}
+                        containerStyle={{ paddingVertical: 15, backgroundColor: '#1f243f' }}
                         dotContainerStyle={{ marginHorizontal: 2 }}
                         tappableDots={!!this.carouselRef}
                         carouselRef={this.carouselRef}
@@ -158,8 +158,8 @@ export default class Email extends React.Component {
                         inactiveDotScale={1}
                         inactiveDotOpacity={1}
                     />
-                    </View>
-            </View >
+                </View>
+            </ScrollView>
         )
     }
 }

@@ -3,7 +3,7 @@ export default {
 
     recommendations: [
         {
-            src: require('../../assets/images/threat-guarded.png'),
+            src: require('../../assets/images/email-guarded.png'),
             overview: 'Even though we didn’t find a direct malicious indicator in your message, always be mindful of potential compromises as they change on a regular basis. Follow our general tips below:',
             tips: [
                 'Verify sender address',
@@ -14,7 +14,7 @@ export default {
             ]
         },
         {
-            src: require('../../assets/images/threat-critical.png'),
+            src: require('../../assets/images/email-critical.png'),
             overview: 'One or more indicators of compromise was identified in your message.  Follow our recommended actions below:',
             tips: [
                 'Delete email',

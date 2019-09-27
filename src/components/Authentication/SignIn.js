@@ -1,7 +1,7 @@
 import React from 'react'
 import constants from '../../../constants'
-import { ActivityIndicator, Alert, AsyncStorage, Text,  TouchableWithoutFeedback,TouchableOpacity, View, Keyboard } from 'react-native'
-import { Notifications } from 'expo';
+import { ActivityIndicator, Alert, AsyncStorage, Text, TouchableWithoutFeedback, TouchableOpacity, View, Keyboard } from 'react-native'
+import { Linking, Notifications } from 'expo';
 import { Button, Input } from 'react-native-elements'
 import IconAnt from 'react-native-vector-icons/AntDesign'
 import IconFeather from 'react-native-vector-icons/Feather'
@@ -12,7 +12,7 @@ import style from '../../../style'
 export default class SignIn extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { loading: false }
+        this.state = { appUrlScheme: '', loading: false }
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -26,6 +26,12 @@ export default class SignIn extends React.Component {
                 <Button title='SIGN UP' buttonStyle={[style.button, { width: 73, height: 26, padding: 0, margin: 0 }]} titleStyle={{ fontSize: 12, fontWeight: '900' }} onPress={() => navigation.navigate('CreateAccount')} />
             )
         }
+    }
+
+    async componentDidMount() {
+        this.setState({
+            appUrlScheme: await Linking.makeUrl('verify/password')
+        })
     }
 
     // Sets session token, user profile Id, and user email for requests
@@ -64,13 +70,13 @@ export default class SignIn extends React.Component {
         this.setState({ loading: true })
 
         if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)) {
+
             axios.post(`${constants.BASE_URL}/auth/login`, {
                 registeredProfileEmail: this.state.email,
                 password: this.state.password
             })
                 .then(resp => {
                     console.log("USER", resp.data)
-                    this.setState({ loading: false })
                     let { authorization } = resp.headers
                     let { userProfileId, verified } = resp.data
 
@@ -82,8 +88,7 @@ export default class SignIn extends React.Component {
                     }
                 })
                 .catch(err => {
-                    console.log(err)
-                    this.setState({ loading: false })
+                    console.log('Error signing in', err)
                     Alert.alert(
                         'Issue connecting to server',
                         'Please try again later',
@@ -97,19 +102,22 @@ export default class SignIn extends React.Component {
         } else {
             this.setState({ errorEmail: 'Please enter a valid email format' })
         }
+
+        this.setState({ loading: false })
+
     }
 
     async handlePasswordReset() {
         if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)) {
-            let token = await AsyncStorage.getItem('token')
+
             Alert.alert(
                 'Send password reset email?',
                 this.state.email,
                 [{
                     text: 'OK', onPress: () =>
-                        axios.post(`${constants.BASE_URL}/auth/verify/password?registeredProfileEmail=${this.state.email}&userProfileId`, {}, { headers: { 'Authorization': token } })
+                        axios.post(`${constants.BASE_URL}/auth/verify/password?registeredProfileEmail=${this.state.email}&userProfileId&appUrlScheme=${this.state.appUrlScheme}`)
                             .then(resp => {
-                                console.log("RESP", resp.data)
+                                console.log('Password verification email sent', resp.data)
                                 if (resp.data.success) {
                                     Alert.alert(
                                         'Password verification email sent',
@@ -157,59 +165,59 @@ export default class SignIn extends React.Component {
     render() {
         return (
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
-            <View style={[style.body, this.state.loading && { opacity: .5 }, { flex: 1, justifyContent: 'center' }]}>
-                <View style={{ height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
-                    <ActivityIndicator animating={this.state.loading} size="large" color="#fff" />
-                </View>
+                <View style={[style.body, this.state.loading && { opacity: .5 }, { flex: 1, justifyContent: 'center' }]}>
+                    <View style={{ height: '100%', position: 'absolute', justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+                        <ActivityIndicator animating={this.state.loading} size="large" color="#fff" />
+                    </View>
 
-                <View style={{ marginBottom: 15 }}>
-                    <Text style={style.h1}>Sign In to</Text>
-                    <Text style={style.h1}>Your Account</Text>
-                </View>
-                <View>
-                    <Input
-                        ref={input => this.email = input}
-                        containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
-                        inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
-                        inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
-                        placeholder='Email Address'
-                        placeholderTextColor='#707992'
-                        onFocus={() => this.setState({ focusEmail: true })}
-                        onBlur={() => this.setState({ focusEmail: false })}
-                        onChangeText={email => this.setState({ email })}
-                        autoCapitalize='none'
-                        rightIcon={<TouchableOpacity style={!(this.state.email && this.state.focusEmail) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ email: null }, this.email.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
-                        errorMessage={this.state.errorEmail}
-                    />
-                    <Input
-                        ref={input => this.password = input}
-                        containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
-                        inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
-                        inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
-                        placeholder='Password'
-                        placeholderTextColor='#707992'
-                        onFocus={() => this.setState({ focusPw: true })}
-                        onBlur={() => this.setState({ focusPw: false })}
-                        onChangeText={password => this.setState({ password })}
-                        autoCapitalize='none'
-                        rightIcon={<TouchableOpacity style={!(this.state.password && this.state.focusPw) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ password: null }, this.password.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
-                        secureTextEntry
-                        errorMessage={this.state.error}
-                    />
-                    <TouchableOpacity onPress={this.handlePasswordReset.bind(this)}>
-                        <Text style={{ color: '#fa4969', fontWeight: 'bold', fontSize: 15, marginVertical: 8, alignSelf: 'flex-end' }}>Forgot Password?</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                    <Button
-                        title="SIGN IN"
-                        titleStyle={{ fontSize: 15, fontWeight: '900' }}
-                        buttonStyle={[style.button, { height: 55, width: '100%', alignSelf: 'center' }]}
-                        onPress={this.login.bind(this)}
-                        disabled={!this.state.email || !this.state.password}
-                        disabledStyle={{ backgroundColor: '#fa496975' }}
-                    />
-                </View>
+                    <View style={{ marginBottom: 15 }}>
+                        <Text style={style.h1}>Sign In to</Text>
+                        <Text style={style.h1}>Your Account</Text>
+                    </View>
+                    <View>
+                        <Input
+                            ref={input => this.email = input}
+                            containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
+                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
+                            inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
+                            placeholder='Email Address'
+                            placeholderTextColor='#707992'
+                            onFocus={() => this.setState({ focusEmail: true })}
+                            onBlur={() => this.setState({ focusEmail: false })}
+                            onChangeText={email => this.setState({ email })}
+                            autoCapitalize='none'
+                            rightIcon={<TouchableOpacity style={!(this.state.email && this.state.focusEmail) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ email: null }, this.email.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
+                            errorMessage={this.state.errorEmail}
+                        />
+                        <Input
+                            ref={input => this.password = input}
+                            containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
+                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
+                            inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
+                            placeholder='Password'
+                            placeholderTextColor='#707992'
+                            onFocus={() => this.setState({ focusPw: true })}
+                            onBlur={() => this.setState({ focusPw: false })}
+                            onChangeText={password => this.setState({ password })}
+                            autoCapitalize='none'
+                            rightIcon={<TouchableOpacity style={!(this.state.password && this.state.focusPw) && { display: 'none' }}><IconFeather name='x-circle' onPress={() => this.setState({ password: null }, this.password.clear())} color='#fa4969' size={15} style={{ paddingRight: 15 }} /></TouchableOpacity>}
+                            secureTextEntry
+                            errorMessage={this.state.error}
+                        />
+                        <TouchableOpacity onPress={this.handlePasswordReset.bind(this)}>
+                            <Text style={{ color: '#fa4969', fontWeight: 'bold', fontSize: 15, marginVertical: 8, alignSelf: 'flex-end' }}>Forgot Password?</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                        <Button
+                            title="SIGN IN"
+                            titleStyle={{ fontSize: 15, fontWeight: '900' }}
+                            buttonStyle={[style.button, { height: 55, width: '100%', alignSelf: 'center' }]}
+                            onPress={this.login.bind(this)}
+                            disabled={!this.state.email || !this.state.password}
+                            disabledStyle={{ backgroundColor: '#fa496975' }}
+                        />
+                    </View>
                 </View>
             </TouchableWithoutFeedback>
         )

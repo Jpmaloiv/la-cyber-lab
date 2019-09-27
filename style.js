@@ -65,6 +65,14 @@ export default StyleSheet.create({
         margin: 20
     },
 
+    buttonPadded: {
+        paddingHorizontal: 15,
+        height: 34,
+        backgroundColor: '#fa4969',
+        borderRadius: 5,
+        margin: 20
+    },
+
     animatedButton: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -76,15 +84,45 @@ export default StyleSheet.create({
         backgroundColor: '#0f2940'
     },
 
-    /* Maps - Custom Marker */
 
+    /* Maps - Custom Markers */
     circleCritical: {
-        width: 25,
-        height: 25,
-        borderRadius: 30 / 2,
-        borderWidth: 3,
+        width: 10,
+        height: 10,
+        borderRadius: 50 / 2,
+        zIndex: 200,
+        borderWidth: 1,
         borderColor: '#fff',
         backgroundColor: '#fa4969',
+    },
+    circleCriticalMax: {
+        width: 25,
+        height: 25,
+        borderRadius: 50 / 2,
+        zIndex: 200,
+        borderWidth: 1,
+        borderColor: '#fff',
+        backgroundColor: '#fa4969',
+    },
+    circleGuarded: {
+        width: 10,
+        height: 10,
+        // zIndex: 200,
+        alignSelf: 'center',
+        borderRadius: 30 / 2,
+        borderWidth: 1,
+        borderColor: '#fff',
+        backgroundColor: '#faf549',
+    },
+    circleGuardedMax: {
+        width: 25,
+        height: 25,
+        // zIndex: 200,
+        alignSelf: 'center',
+        borderRadius: 30 / 2,
+        borderWidth: 1,
+        borderColor: '#fff',
+        backgroundColor: '#faf549',
     },
     auraCritical: {
         backgroundColor: 'rgba(255,0,0,.1)',
@@ -95,14 +133,6 @@ export default StyleSheet.create({
         height: 90,
         marginBottom: 10,
     },
-    circleGuarded: {
-        width: 25,
-        height: 25,
-        borderRadius: 30 / 2,
-        borderWidth: 3,
-        borderColor: '#fff',
-        backgroundColor: '#faf549',
-    },
     auraGuarded: {
         backgroundColor: 'rgba(250,245,73,.1)',
         borderRadius: 50,
@@ -112,8 +142,4 @@ export default StyleSheet.create({
         height: 90,
         marginBottom: 10,
     },
-
-    // CircularProgressbar CircularProgressbar-path {
-    //     stroke: url(#idCSS);
-    //   }
 });

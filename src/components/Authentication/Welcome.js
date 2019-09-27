@@ -1,5 +1,5 @@
 import React from 'react'
-import { ImageBackground, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ImageBackground, Text, TouchableOpacity, View } from 'react-native'
 import { Button } from 'react-native-elements'
 import style from '../../../style'
 
@@ -8,8 +8,13 @@ export default class Welcome extends React.Component {
     render() {
         return (
             <ImageBackground source={require('../../../assets/images/welcome.png')} style={{ width: '100%', flex: 1 }}>
-                <View style={{ flex: 1 }}></View>
-                <View style={[style.body, { flex: 3, justifyContent: 'space-evenly' }]}>
+                <View style={{ flex: 1 }}>
+                    <View style={{flex: 1}}></View>
+                    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                        <Image source={require('../../../assets/lacl.png')} style={{ alignSelf: 'center', width: 250, height: 140 }} />
+                    </View>
+                </View>
+                <View style={[style.body, { flex: 3, justifyContent: 'space-evenly', paddingTop: 0 }]}>
                     <View style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ fontSize: 20 }}>Welcome to</Text>
                         <Text style={{ fontSize: 35, fontWeight: 'bold' }}>LA CYBER LAB</Text>

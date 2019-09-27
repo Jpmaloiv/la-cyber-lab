@@ -33,7 +33,7 @@ export default class CreateAccount extends Component {
     async validateNewEmail() {
         let validation = await axios.get(`${constants.BASE_URL}/auth/validate?registeredProfileEmail=${this.state.email}`)
             .then(resp => {
-                console.log("RESP", resp)
+                console.log("RESP", resp.data)
                 if (resp.data.isValidEmail == 1) return true
                 else return false
             })
@@ -91,7 +91,7 @@ export default class CreateAccount extends Component {
 
         return (
 
-                <KeyboardAwareScrollView enableOnAndroid accessible={false} >
+            <KeyboardAwareScrollView enableOnAndroid accessible={false} contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={[style.body, { flex: 1, paddingBottom: 25 }]} behavior='height' enabled>
                     <View style={{ marginBottom: 15 }}>
                         <Text style={style.h1}>Let's Create</Text>
@@ -113,7 +113,7 @@ export default class CreateAccount extends Component {
                         <Input
                             ref={input => this.lastName = input}
                             containerStyle={{ marginVertical: 8, paddingHorizontal: 0 }}
-                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }} asd
+                            inputContainerStyle={{ borderWidth: 1, borderColor: '#707992', borderRadius: 5 }}
                             inputStyle={{ color: '#fff', fontSize: 15, padding: 15 }}
                             placeholder='Last Name'
                             placeholderTextColor='#707992'

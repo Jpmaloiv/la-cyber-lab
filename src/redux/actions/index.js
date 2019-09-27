@@ -1,2 +1,2 @@
-export * from "./comon_actions";
+export * from "./common_actions";
 

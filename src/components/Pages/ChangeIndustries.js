@@ -1,8 +1,9 @@
 
 import React from 'react';
 import constants from '../../../constants'
-import { Alert, Button, ScrollView, Text, View } from 'react-native'
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { CheckBox } from 'react-native-elements'
+import Icon from 'react-native-vector-icons/AntDesign'
 import style from '../../../style'
 import axios from 'axios';
 
@@ -24,13 +25,12 @@ export default class ChangesectorIds extends React.Component {
 
     static navigationOptions = ({ navigation }) => ({
         headerLeft: (
-            <Button
-                onPress={() => this.goBack(navigation)}
-                title="< Back"
-                color="#fff"
-            />
+            <TouchableOpacity onPress={() => this.goBack(navigation)}>
+                <Icon name='arrowleft' color='#fff' size={30} />
+            </TouchableOpacity>
         ),
     });
+
 
     componentDidMount() {
         axios.get(`${constants.BASE_URL}/sectors`, { headers: { 'Authorization': constants.AUTHORIZATION_TOKEN } })
@@ -48,24 +48,25 @@ export default class ChangesectorIds extends React.Component {
 
         const { sectors, sectorIds } = this.state
 
-        console.log(this.state)
-
         return (
             <View style={[style.body, { flex: 1, marginBottom: 50 }]}>
-                <Text style={[style.h3, { marginVertical: 5 }]}>What industry are you in?</Text>
-                <Text style={[style.h5, { marginVertical: 5, marginBottom: 10}]}>Select All That Apply</Text>
-                <ScrollView>
+                <View style={{ marginBottom: 15 }}>
+                    <Text style={style.h1}>What Industry</Text>
+                    <Text style={style.h1}>Are You In?</Text>
+                </View>
 
+                <Text style={{ fontSize: 15, color: '#f5bd00', marginTop: 10, marginBottom: 25 }}>Select All That Apply</Text>
+
+                <ScrollView>
                     {sectors.map((el, i) =>
                         <CheckBox
-                            center
+                            iconRight
                             title={el.sectorDescription}
                             key={el.userSectorId}
-                            containerStyle={{alignItems:"flex-start", backgroundColor: 'transparent' }}
-                            textStyle={{ color: '#fff' }}
-                            checkedIcon='dot-circle-o'
-                            
-                            uncheckedIcon='circle-o'
+                            containerStyle={{ paddingHorizontal: 0, paddingVertical: 15, marginHorizontal: 0, marginVertical: 0, alignItems: 'flex-end', backgroundColor: 'transparent', borderWidth: 0, borderTopWidth: 1, borderColor: '#333957' }}
+                            textStyle={{ flex: 1, marginLeft: 0, fontSize: 15, fontWeight: '500', color: '#707992' }}
+                            checkedIcon={<Icon name='checkcircleo' size={25} color='#f5bd00' />}
+                            uncheckedIcon={<View style={{ borderWidth: 1, borderColor: "#fff", backgroundColor: '#202642', height: 25, width: 25, borderRadius: 50 }} />}
                             checked={sectorIds.includes(el.userSectorId)}
                             // Toggles industry selection up to 3 choices
                             onPress={() => {

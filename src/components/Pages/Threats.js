@@ -1,8 +1,8 @@
 import React from 'react'
 import constants from '../../../constants'
-import { AsyncStorage, ScrollView, Text, View, RefreshControl } from 'react-native'
+import { AsyncStorage, FlatList, ScrollView, Text, View, RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
-import { ButtonGroup} from 'react-native-elements'
+import { ButtonGroup } from 'react-native-elements'
 import moment from 'moment'
 import style from '../../../style'
 import axios from 'axios';
@@ -10,27 +10,56 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default class Threats extends React.Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
-            threats: []
+            threats: [],
+            threatsCritical: [],
+            threatsGuarded: []
         }
     }
 
     async componentDidMount() {
+
+        let userProfileId = await AsyncStorage.getItem('userProfileId')
+
         axios.get(`${constants.BASE_URL}/profile/emails?email=${await AsyncStorage.getItem('email')}`,
             { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
             .then(resp => {
-                console.log('Profile emails found', resp.data)
+                // console.log('Profile emails found', resp.data)
                 this.setState({
                     threatsCritical: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Critical'),
                     threatsGuarded: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Guarded')
-                })
+                }, this.sortThreats)
                 this.updateIndex(0);
             })
             .catch(err => {
                 console.log(err)
             })
+
+        this.focusListener = this.props.navigation.addListener('didFocus', async () => {
+            axios.get(`${constants.BASE_URL}/notifications/reset?userProfileId=${userProfileId}`, { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
+                .then(resp => {
+                    console.log('Notification counter reset', resp.data)
+                    AsyncStorage.setItem('notificationCounter', '0')
+                })
+                .catch(err => console.log(err))
+        })
+    }
+
+    sortThreats() {
+
+        this.state.threatsCritical.sort(function (a, b) {
+            var dateA = new Date(a.reportDate);
+            var dateB = new Date(b.reportDate);
+            return dateB - dateA;
+        })
+
+        this.state.threatsGuarded.sort(function (a, b) {
+            var dateA = new Date(a.reportDate);
+            var dateB = new Date(b.reportDate);
+            return dateB - dateA;
+        })
     }
 
     _onRefresh = () => {
@@ -50,12 +79,12 @@ export default class Threats extends React.Component {
         axios.get(`${constants.BASE_URL}/profile/emails?email=${await AsyncStorage.getItem('email')}`,
             { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
             .then(resp => {
-                console.log('Profile emails found', resp.data)
+                console.log('Profile emails found on refresh', resp.data)
                 this.setState({
                     threatsCritical: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Critical'),
                     threatsGuarded: resp.data.emails.filter(el => el.reportRiskScoreDesc === 'Guarded')
-                })
-                // this.updateIndex(0);
+                }, this.sortThreats)
+                this.updateIndex(this.state.selectedIndex);
             })
             .catch(err => {
                 console.log(err)
@@ -69,10 +98,11 @@ export default class Threats extends React.Component {
     }
 
     render() {
+
         const buttons = ['Critical', 'Guarded']
 
         return (
-            <View>
+            <View style={{ flex: 1 }}>
                 <View style={style.header}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={style.h1}>Emails</Text>
@@ -92,39 +122,39 @@ export default class Threats extends React.Component {
                     selectedTextStyle={{ opacity: 1 }}
                 />
 
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.refreshing}
-                            onRefresh={this._onRefresh}
-                        />}
-                    contentContainerStyle={[style.body, { backgroundColor: '#1f243f', flexGrow: 1, height: '100%' }]}
-                >
-
-                    {this.state.threats.length > 0 ?
-                        <View>
-                            {this.state.threats.map((item, i) => (
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Recommendations', {
+                {this.state.threats.length > 0 ?
+                    <View style={{ flex: 1 }}>
+                        <FlatList
+                            data={this.state.threats}
+                            maxToRenderPerBatch={3}
+                            showsVerticalScrollIndicator={false}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this._onRefresh}
+                                />}
+                            contentContainerStyle={[style.body, { backgroundColor: '#1f243f', flexGrow: 1 }]}
+                            renderItem={({ item, index }) =>
+                                <TouchableOpacity key={index} onPress={() => this.props.navigation.navigate('Recommendations', {
                                     critical: this.state.selectedIndex == 0 ? 1 : 0,
-                                })} key={i} style={{ backgroundColor: '#222847', borderRadius: 15, marginVertical: 4 }}>
+                                })} style={{ backgroundColor: '#222847', borderRadius: 15, marginVertical: 4 }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 15 }}>
                                         <Text numberOfLines={1} style={{ fontSize: 15, maxWidth: '70%', fontWeight: 'bold' }}>{item.reportTitle}</Text>
-                                        <Text style={style.h7}>{moment(item.reportDate).format('MM/DD')}</Text>
-
+                                        <Text style={style.h7}>{moment.utc(item.reportDate).format('MM/DD')}</Text>
                                     </View>
                                     <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <Text numberOfLines={1} style={{ fontSize: 12, color: '#707992', maxWidth: '70%', paddingHorizontal: 10, paddingBottom: 10 }}>{item.eMail}</Text>
-                                        {<View style={{ backgroundColor: this.color(), borderTopLeftRadius: 14, borderBottomRightRadius: 14, padding: 10 }}><Text>{item.reportIndicatorTypeDesc}</Text></View>}
+                                        <Text numberOfLines={1} style={{ fontSize: 12, color: '#707992', maxWidth: '50%', paddingHorizontal: 10, paddingBottom: 10 }}>{item.eMail}</Text>
+                                        {<View style={{ backgroundColor: this.color(), borderTopLeftRadius: 14, borderBottomRightRadius: 14, padding: 10 }}><Text style={{fontSize: 12}} numberOfLines={1}>{item.reportIndicatorTypeDesc}</Text></View>}
                                     </View>
                                 </TouchableOpacity>
-                            ))}
-                        </View>
-                        :
-                        <Text style={{ textAlign: 'center' }}>
-                            No emails yet. Please submit your emails to gophish@lacyberlab.net
-                        </Text>
-                    }
-                </ScrollView>
+                            }
+                        />
+                    </View>
+                    :
+                    <Text style={{ textAlign: 'center', marginTop: 10 }}>
+                        No emails yet. Please submit your emails to gophish@lacyberlab.net
+                    </Text>
+                }
             </View>
         )
     }

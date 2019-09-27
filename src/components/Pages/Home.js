@@ -11,12 +11,13 @@ import axios from 'axios';
 import { AreaChart, Grid, XAxis, YAxis } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
 import moment from 'moment'
-import dateFns from 'date-fns'
-import {connect}from "react-redux"
-import {rss} from "../../redux/actions"
+import CustomMarker from '../custom/CustomMarker'
+import { connect } from "react-redux"
+import { rss } from "../../redux/actions"
 import * as rssParser from 'react-native-rss-parser';
 import { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import ClusteredMapView from 'react-native-maps-super-cluster'
 import style from '../../../style'
 
 
@@ -49,6 +50,7 @@ class Home extends React.Component {
             selectedIndex: 0,
             globalGuarded: [], globalCritical: [],
             refreshing: false,
+            locationServicesError: false,
             markers: [{
                 latitude: 0,
                 longitude: 0,
@@ -59,13 +61,20 @@ class Home extends React.Component {
                     longitude: 0,
                 }
             },
+            sectorTypes: [],
+            sector1Critical: [],
+            sector1Guarded: [],
+            profileCritical: [],
+            profileGuarded: [],
+            profileData: [],
             days: 30,
             showLabel: true,
             activeSector: 1,
             loading: true,
-            rss: [{title: '', links: [{url: ''}, {url: ''}]}, {title: '', links: [{url: ''}, {url: ''}]}],
-            tracksViewChanges: true,
-            alertLevel: ''
+            rss: [{ title: '', links: [{ url: '' }, { url: '' }] }, { title: '', links: [{ url: '' }, { url: '' }] }],
+            tracksViewChanges: false,
+            alertLevel: '',
+            z: 5
         }
     }
 
@@ -76,13 +85,12 @@ class Home extends React.Component {
         })
     }
 
-    componentWillMount() {
+    async componentWillMount() {
         this.props.rss()
         this.fetchGraphData();
 
         this.focusListener = this.props.navigation.addListener('didFocus', async () => {
             let refresh = await AsyncStorage.getItem('refresh')
-            console.log("REFRESH", refresh)
             if (refresh === 'true') {
                 this.setState({ loading: true });
                 this.fetchGraphData().then(() => {
@@ -91,7 +99,22 @@ class Home extends React.Component {
                 AsyncStorage.setItem('refresh', 'false')
             }
 
+            let notificationCounter = await AsyncStorage.getItem('notificationCounter')
+            this.setState({ notificationCounter })
+
         })
+
+        let userProfileId = await AsyncStorage.getItem('userProfileId')
+        console.log("USER PROFILE ID:", userProfileId, typeof (userProfileId))
+
+        // Fetch number of new notifications for user
+        axios.get(`${constants.BASE_URL}/notifications/count?userProfileId=${userProfileId}`, { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
+            .then(resp => {
+                console.log('Notification counter', resp.data)
+                AsyncStorage.setItem('notificationCounter', JSON.stringify(resp.data.notificationHistoryList))
+                this.setState({ notificationCounter: resp.data.notificationHistoryList })
+            })
+            .catch(err => console.log(err))
     }
 
 
@@ -102,21 +125,21 @@ class Home extends React.Component {
 
         axios.get(`${constants.BASE_URL}/dashboard/risk/global?days=${90}`, { headers: { 'Authorization': token } })
             .then(resp => {
-                // console.log('GLOBAL', resp)
+                // console.log('GLOBAL', resp.data)
                 this.sortGlobalReports(resp.data.reportRiskGlobal)
             })
             .catch(err => console.log(err))
 
         axios.get(`${constants.BASE_URL}/dashboard/risk/sector?email=${email}&days=${90}`, { headers: { 'Authorization': token } })
             .then(resp => {
-                // console.log('SECTOR', resp)
+                // console.log('SECTOR', resp.data)
                 this.sortSectorReports(resp.data.reportRiskSector)
             })
             .catch(err => console.log(err))
 
         axios.get(`${constants.BASE_URL}/dashboard/risk/profile?email=${email}&days=${90}`, { headers: { 'Authorization': token } })
             .then(resp => {
-                // console.log('PROFILE', resp)
+                // console.log('PROFILE', resp.data)
                 this.sortProfileReports(resp.data.reportRiskProfile)
             })
             .catch(err => console.log(err))
@@ -124,7 +147,7 @@ class Home extends React.Component {
         // Get threat level from CIS scraper
         axios.get(`${constants.BASE_URL}/scraper`, { headers: { 'Authorization': token } })
             .then(resp => {
-                // console.log("HERE", resp)
+                // console.log("Scraper Results:", resp)
                 this.setState({
                     alertLevel: resp.data.alertLevel
                 })
@@ -134,8 +157,8 @@ class Home extends React.Component {
         // Risk locations for map
         axios.get(`${constants.BASE_URL}/dashboard/risk/locations?days=${30}`, { headers: { 'Authorization': token } })
             .then(resp => {
-                // console.log("LOCATION RESULTS", resp.data.locationResults)
-                this.setState({ markers: resp.data.locationResults })
+                // console.log("Location Results:", resp.data.locationResults)
+                this.setState({ markers: resp.data.locationResults }, this.parseMarkers)
             })
             .catch(err => console.log(err))
 
@@ -159,39 +182,77 @@ class Home extends React.Component {
         // }
     }
 
+    parseMarkers() {
+        for (let i = 0; i < this.state.markers.length; i++) {
+            let marker = this.state.markers[i]
+            if (marker.reportRiskScoreDesc === 'Critical') marker.color = 'red'
+            else marker.color = 'yellow'
+
+        }
+    }
+
 
     _getLocationAsync = async () => {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
             this.setState({
-                errorMessage: 'Permission to access location was denied',
+                locationServicesError: true,
             });
+        } else {
+
+            let location = await Location.getCurrentPositionAsync({});
+            if (Platform.OS !== "ios")
+                console.log("Location android", location)
+
+
+            this.setState({ location });
         }
-
-        let location = await Location.getCurrentPositionAsync({});
-        if (Platform.OS !== "ios")
-            console.log("Location android", location)
-
-
-        this.setState({ location });
-
-        // Seeded marker data
-
-        let { latitude, longitude } = location.coords
-        let markers = [{
-            latlng: {
-                latitude: latitude,
-                longitude: longitude
-            }
-        }, {
-            latlng: {
-                latitude: latitude - .04,
-                longitude: longitude - .02
-            }
-        }]
-
-        this.setState({ markers })
     };
+
+
+    // renderCluster = (cluster, onPress) => {
+    //     const pointCount = cluster.pointCount,
+    //         coordinate = cluster.coordinate,
+    //         clusterId = cluster.clusterId
+
+    //     // use pointCount to calculate cluster size scaling
+    //     // and apply it to "style" prop below
+
+    //     // eventually get clustered points by using
+    //     // underlying SuperCluster instance
+    //     // Methods ref: https://github.com/mapbox/supercluster
+    //     const clusteringEngine = this.map.getClusteringEngine(),
+    //         clusteredPoints = clusteringEngine.getLeaves(clusterId, 100)
+
+    //     return (
+    //         <Marker coordinate={coordinate} onPress={onPress}>
+    //             <View style={styles.myClusterStyle}>
+    //                 <Text style={styles.myClusterTextStyle}>
+    //                     {pointCount}
+    //                 </Text>
+    //             </View>
+    //             {
+    //                 /*
+    //                   Eventually use <Callout /> to
+    //                   show clustered point thumbs, i.e.:
+    //                   <Callout>
+    //                     <ScrollView>
+    //                       {
+    //                         clusteredPoints.map(p => (
+    //                           <Image source={p.image}>
+    //                         ))
+    //                       }
+    //                     </ScrollView>
+    //                   </Callout>
+
+    //                   IMPORTANT: be aware that Marker's onPress event isn't really consistent when using Callout.
+    //                  */
+    //             }
+    //         </Marker>
+    //     )
+    // }
+
+    // renderMarker = (data) => <Marker key={data.id || Math.random()} coordinate={data.location} />
 
     sortGlobalReports(global) {
         // console.log("GLOBAL", global)
@@ -219,7 +280,6 @@ class Home extends React.Component {
         // globalGuarded.sort(function (a, b) {
         //     return new Date(b.date) - new Date(a.date);
         // });
-        // console.log("HERE", globalCritical)
 
         // Allows 10% range flexibility when checking whether or not to place marker point for values
         let range = (max - min) * .1
@@ -326,33 +386,26 @@ class Home extends React.Component {
             }
         }
 
+        let profileData = profileCritical.concat(profileGuarded)
         // Finds highest threat score to set boundaries for both graphs
-        let max = Math.max.apply(Math, profileCritical.map(function (o) { return o.reportRiskCount; }))
-        let min = Math.min.apply(Math, profileCritical.map(function (o) { return o.reportRiskCount; }))
+        let max = Math.max.apply(Math, profileData.map(function (o) { return o.reportRiskCount; }))
+        // let min = Math.min.apply(Math, profileData.map(function (o) { return o.reportRiskCount; }))
 
-        // Sort array by descending order of report dates
-        // profileGuarded.sort(function (a, b) {
-        //     return new Date(b.date) - new Date(a.date);
-        // });
-        // console.log("HERE", profileCritical)
+        // console.log("CRIT", profileCritical, profileGuarded)
 
-        // Allows 10% range flexibility when checking whether or not to place marker point for values
-        let range = (max - min) * .1
-
-        // ?? May need to sort by descending dates 
-
-        for (let i = 0; i < profileCritical.length; i++) {
-            let obj = profileCritical[i]
-            // obj['test'] = 6
-            if (i >= 1) {
-                let max = Math.max(profileCritical[i].reportRiskCount, profileCritical[i - 1].reportRiskCount)
-                let min = Math.min(profileCritical[i].reportRiskCount, profileCritical[i - 1].reportRiskCount)
-            }
-        }
+        // for (let i = 0; i < profileCritical.length; i++) {
+        //     let obj = profileCritical[i]
+        //     // obj['test'] = 6
+        //     console.log("HERE", profileCritical[i].reportRiskCount)
+        //     if (i >= 1) {
+        //         let max = Math.max(profileCritical[i].reportRiskCount, profileCritical[i - 1].reportRiskCount)
+        //         let min = Math.min(profileCritical[i].reportRiskCount, profileCritical[i - 1].reportRiskCount)
+        //     }
+        // }
 
 
         let yMaxProfile = max
-        this.setState({ profileGuarded, profileCritical, yMaxProfile })
+        this.setState({ profileGuarded, profileCritical, profileData, yMaxProfile })
     }
 
 
@@ -369,7 +422,6 @@ class Home extends React.Component {
 
     renderAlertLevel() {
         let alertLevel = this.state.alertLevel.toLowerCase()
-        console.log("Threat alert level:", alertLevel)
 
         let src, desc
 
@@ -409,24 +461,30 @@ class Home extends React.Component {
 
     renderItem({ item, index }) {
         return (
-            <TouchableOpacity onPress={() => this.state.alertLevel && this.props.navigation.navigate('RecommendationActions', { alertLevel: this.state.alertLevel })} style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => ((index == 0) && (this.state.alertLevel)) && this.props.navigation.navigate('RecommendationActions', { alertLevel: this.state.alertLevel })} style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
                 {index == 0 ?
                     <ImageBackground source={item.src} style={{ width: '100%', height: 200 }}>
-                                {this.renderAlertLevel()}
+                        {this.renderAlertLevel()}
                     </ImageBackground>
                     :
                     <View style={{ justifyContent: 'space-around', width: '100%', height: 180, backgroundColor: '#313961', padding: 15, paddingHorizontal: 25 }}>
                         <Text style={{ color: '#f5bd00', fontSize: 10, fontWeight: '900' }}>TIP OF THE DAY</Text>
                         <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{item.title}</Text>
-                        <Text numberOfLines={4} style={{ fontSize: 13, opacity: .8 }}>{item.desc}</Text>
+                        <Text numberOfLines={3} style={{ fontSize: 13, opacity: .8 }}>{item.desc}</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Button onPress={() => Linking.openURL(item.link).catch((err) => console.log('An error occurred', err))} buttonStyle={[style.button, { width: 98, height: 25, padding: 0, margin: 0 }]} title='Read More ->' titleStyle={{ fontSize: 12, fontWeight: '900' }} />
+                            <Button onPress={() => Linking.openURL(item.link).catch((err) => console.log('An error occurred', err))} buttonStyle={[style.button, { width: 98, height: 25, padding: 0, margin: 0 }]} title='Read More ->' titleStyle={{ fontSize: 12, fontWeight: '900' }} />
                             <Text style={{ opacity: .25, fontSize: 10, fontWeight: 'bold' }}>{item.date}</Text>
                         </View>
                     </View>
                 }
             </TouchableOpacity>
         )
+    }
+
+    determineColor(risk) {
+        console.log("RISK", risk)
+        if (risk === 'critical') return 'red'
+        else return 'yellow'
     }
 
     renderSectorGraph() {
@@ -609,6 +667,7 @@ class Home extends React.Component {
 
     render() {
 
+        // ?
         if (this.state.globalGuarded.length > 0) this.state.globalGuarded[1].reportRiskCount = 40
 
 
@@ -622,13 +681,13 @@ class Home extends React.Component {
                 title: this.state.rss[0].title,
                 desc: this.state.rss[0].description,
                 link: this.state.rss[0].links[0].url,
-                date: moment(this.state.rss[0].published).format('ll').toUpperCase()
+                date: moment.utc(this.state.rss[0].published).format('ll').toUpperCase()
             },
             {
                 title: this.state.rss[1].title,
                 desc: this.state.rss[1].description,
                 link: this.state.rss[1].links[0].url,
-                date: moment(this.state.rss[1].published).format('ll').toUpperCase()
+                date: moment.utc(this.state.rss[1].published).format('ll').toUpperCase()
             },
         ]
 
@@ -749,6 +808,14 @@ class Home extends React.Component {
             value: 'Last 90 Days',
         }]
 
+        const INIT_REGION = {
+            latitude: 41.8962667,
+            longitude: 11.3340056,
+            latitudeDelta: 12,
+            longitudeDelta: 12
+        }
+
+
         return (
 
             <ScrollView
@@ -762,7 +829,21 @@ class Home extends React.Component {
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Text style={style.h1}>LA Cyber Lab</Text>
-                        <Icon name='bell' color='#fff' size={30} />
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Threats')}>
+                            <Image source={require('../../../assets/images/notification.png')} style={{ width: 25, height: 27 }} />
+                            {/* <Icon name='bell' color='#fff' size={30} /> */}
+                            {this.state.notificationCounter != 0 &&
+                                <View style={{
+                                    position: 'absolute',
+                                    right: 0,
+                                    borderRadius: 30 / 2,
+                                    backgroundColor: '#fa4969',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}><Text style={{ fontSize: 10, padding: 1, paddingHorizontal: 4 }}>{this.state.notificationCounter}</Text></View>
+                            }
+                        </TouchableOpacity>
+
                     </View>
 
                     <View style={[style.body, { flex: 1, justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 0 }]}>
@@ -802,21 +883,22 @@ class Home extends React.Component {
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Text style={style.h2}>Threat Trend</Text>
                         {/* <View style={{alignItems: 'center', justifyContent: 'center', alignSelf: 'center'}}> */}
-                        <Dropdown
-                            label={this.state.showLabel && 'Last 30 Days'}
-                            data={mapFilter}
-                            baseColor='#fff'
-                            textColor='#fff'
-                            itemColor='#fff'
-                            selectedItemColor='#fff'
-                            fontSize={12}
-                            itemPadding={6}
-                            containerStyle={{ marginTop: -20, width: 100, justifyContent: 'center' }}
-                            overlayStyle={{ justifyContent: 'center', alignItems: 'center' }}
-                            pickerStyle={{ backgroundColor: '#6e7892', borderRadius: 7, justifyContent: 'center', alignItems: 'center' }}
-                            onChangeText={value => this.daysHandler(value)}
-                        />
-                        {/* </View> */}
+                        <View style={{ flex: 1, alignItems: 'flex-end', zIndex: 30 }}>
+                            <Dropdown
+                                label={this.state.showLabel && 'Last 30 Days'}
+                                data={mapFilter}
+                                baseColor='#fff'
+                                textColor='#fff'
+                                itemColor='#fff'
+                                selectedItemColor='#fff'
+                                fontSize={12}
+                                itemPadding={6}
+                                containerStyle={{ marginTop: -20, width: 100, justifyContent: 'center' }}
+                                overlayStyle={{ justifyContent: 'center', alignItems: 'center' }}
+                                pickerStyle={{ backgroundColor: '#6e7892', borderRadius: 7, justifyContent: 'center', alignItems: 'center' }}
+                                onChangeText={value => this.daysHandler(value)}
+                            />
+                        </View>
                     </View>
 
                     <ButtonGroup
@@ -824,15 +906,15 @@ class Home extends React.Component {
                         selectedIndex={this.state.selectedIndex}
                         buttons={buttons}
                         innerBorderStyle={{ width: 0 }}
-                        containerStyle={{ backgroundColor: 'transparent', height: 27, borderWidth: 0, marginTop: 20, marginBottom: 20 }}
+                        containerStyle={{ backgroundColor: 'transparent', height: 27, borderWidth: 0, marginTop: 20, marginBottom: 20, zIndex: 10 }}
                         textStyle={{ fontSize: 12, color: '#fff' }}
                         buttonStyle={{ width: 85, borderRadius: 25, borderColor: '#6e7892', borderWidth: 1 }}
                         selectedButtonStyle={{ backgroundColor: '#6e7892' }}
                     />
                     <Text style={{ fontSize: 10 }}>{!this.state.loading && 'Count'}</Text>
-                    {this.state.selectedIndex == 0 || this.state.selectedIndex == 2 ?
-                        <View>
 
+                    {((this.state.selectedIndex == 0) || (this.state.selectedIndex == 2)) ?
+                        <View>
                             <View style={{ height: 200, flexDirection: 'row', marginBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
 
                                 <View style={{ flex: 1, position: 'absolute' }}>
@@ -843,7 +925,7 @@ class Home extends React.Component {
                                 </View>
                                 <YAxis
                                     data={this.state.selectedIndex == 0 ? this.state.globalCritical :
-                                        this.state.selectedIndex == 1 ? this.state.sectorCritical : this.state.profileCritical}
+                                        this.state.selectedIndex == 1 ? this.state.sectorCritical : this.state.profileData}
                                     yAccessor={({ item }) => item.reportRiskCount}
                                     contentInset={{ top: 10, bottom: 25 }}
                                     svg={{ fontSize: 12, fill: '#707992' }}
@@ -958,36 +1040,37 @@ class Home extends React.Component {
 
                     <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Threat Conditions</Text>
                 </View>
-                <View style={styles.container}>
-                    <MapView
-                        provider={PROVIDER_GOOGLE}
-                        style={{ width: '100%', height: '100%' }}
-                        region={{
-                            latitude: this.state.location.coords.latitude,
-                            longitude: this.state.location.coords.longitude,
-                            latitudeDelta: .2,
-                            longitudeDelta: .2
-                        }}
-                        onMapReady={() => this.setState({ tracksViewChanges: false })}
-                    >
-                        {this.state.markers.map((marker, index) =>
-                            (
-                                <MapView.Marker
-                                    coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
-                                    key={index}
-                                    tracksViewChanges={this.state.tracksViewChanges}
-                                >
-                                    <View
-                                    // style={style.auraGuarded}
-                                    >
-                                        <View style={marker.reportRiskScore == '2.00' ? style.circleCritical : style.circleGuarded} />
-                                        {/* <View style={style.auraGuarded}>
-                                    <View style={style.circleGuarded} /> */}
+                {this.state.locationServicesError ?
+                    <View style={{ width: '100%', height: 300, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1f243f' }}>
+                        <Text style={{ color: '#b1b1b1' }}>Please enable location services to view the map.</Text>
+                    </View>
+                    :
+                    <View style={styles.container}>
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            style={{ width: '100%', height: '100%' }}
+                            region={{
+                                latitude: this.state.location.coords.latitude,
+                                longitude: this.state.location.coords.longitude,
+                                latitudeDelta: .2,
+                                longitudeDelta: .2
+                            }}
+                            maxZoomLevel={11}
+                        >
+                            {this.state.markers.map((marker, index) =>
+                                (
+                                    <View key={index}>
+                                        <CustomMarker
+                                            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                                            type={marker.reportRiskScoreDesc === 'Critical' ? 'critical' : 'guarded'}
+                                            isMaxCount={marker.isMaxCount}
+                                            z={this.state.z++}
+                                            color={marker.color}
+                                        />
                                     </View>
-                                </MapView.Marker>
-                            ))}
-                    </MapView>
-                </View>
+                                ))}
+                        </MapView>
+                    </View>}
             </ScrollView >
         )
     }
@@ -1007,4 +1090,4 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
 });
-export default connect(null,{rss})(Home)
+export default connect(null, { rss })(Home)

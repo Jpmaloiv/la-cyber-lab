@@ -2,10 +2,23 @@
   "expo": {
     "name": "LA Cyber Lab",
     "slug": "LACyberLab",
+    "scheme": "lacyberlab",
     "privacy": "unlisted",
     "sdkVersion": "34.0.0",
     "notification": {
-      "icon": "./assets/images/logo.png"
+      "icon": "./assets/images/notification-icon.png"
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "la-cyber-lab",
+            "project": "la-cyber-lab",
+            "authToken": "7ea6ab3563864681a452d2aec0e458fb4fb3ae6ff067437882e7c52f2dc5cacb"
+          }
+        }
+      ]
     },
     "packagerOpts": {
       "nonPersistent": "--nonPersistent"
@@ -15,7 +28,7 @@
       "android",
       "web"
     ],
-    "version": "0.4",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/logosmall.png",
     "splash": {
@@ -37,12 +50,12 @@
         "NSLocationWhenInUseUsageDescription": "LA Cyber Labs needs your location to find threats near you."
       },
       "bundleIdentifier": "com.lacyberlab.lacyberlab",
-      "buildNumber": "1",
-      "supportsTablet": false
+      "buildNumber": "5",
+      "supportsTablet": true
     },
     "android": {
       "package": "com.lacyberlab.lacyberlab",
-      "versionCode": 2,
+      "versionCode": 7,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAPgLN6KhsviVOXybjygwCviqMYtXUQoxM"

@@ -1,7 +1,8 @@
 import React from 'react'
-import { Dimensions, Image, Linking, ScrollView, View } from 'react-native'
+import { Dimensions, Image, Linking, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Divider, Text } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import IconAnt from 'react-native-vector-icons/AntDesign'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import text from '../../text/Recommendations'
 import style from '../../../style'
@@ -14,6 +15,16 @@ export default class Recommendations extends React.Component {
             activeSlide: 0,
             sliderWidth: Dimensions.get('window').width,
             loading: true
+        }
+    }
+
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerLeft: (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <IconAnt name='arrowleft' color='#fff' size={30} />
+                </TouchableOpacity>
+            )
         }
     }
 

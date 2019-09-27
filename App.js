@@ -5,12 +5,14 @@ import React from 'react';
 import constants from './constants'
 import NotificationPopup from 'react-native-push-notification-popup';
 import { registerRootComponent } from 'expo';
-import { ActivityIndicator, Alert, AsyncStorage, Image, Platform, StatusBar, Text, View } from 'react-native'
-import { Linking, Notifications } from 'expo';
+import { ActivityIndicator, Alert, AsyncStorage, ErrorUtils, Image, Platform, StatusBar, Text, View } from 'react-native'
+import { ErrorRecovery, Linking, Notifications } from 'expo';
+import * as Sentry from 'sentry-expo';
 import * as Permissions from 'expo-permissions'
 import { createStackNavigator, createAppContainer, createSwitchNavigator, createBottomTabNavigator, NavigationActions } from 'react-navigation';
 import { setCustomText } from 'react-native-global-props'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios'
 import style from './style'
 
 import Welcome from './src/components/Authentication/Welcome'
@@ -33,6 +35,10 @@ import Feed from './src/components/Pages/Feed'
 import Profile from './src/components/Pages/Profile'
 
 import Recommendations from './src/components/Pages/Recommendations'
+import RecommendationActions from './src/components/Pages/RecommendationActions'
+
+import Error from './src/components/Errors/Error'
+
 import store from './src/redux/store';
 import { Provider } from "react-redux";
 
@@ -43,6 +49,9 @@ import { Provider } from "react-redux";
 // let verifyLink= Linking.makeUrl('verify/email')
 // console.log("VERIFY LINK", verifyLink)
 
+// console.log("PROPS", this.props)
+
+// ErrorRecovery.setRecoveryProps('error') 
 
 // Navigation
 const AuthStack = createStackNavigator({
@@ -55,118 +64,113 @@ const AuthStack = createStackNavigator({
   SignIn,
   ResetPassword
 }, {
-    defaultNavigationOptions: {
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: '#232947', marginHorizontal: 25, marginTop: 10, elevation: 0
-      },
-      headerTintColor: '#fff'
+  defaultNavigationOptions: {
+    headerStyle: {
+      borderBottomWidth: 0,
+      backgroundColor: '#232947', marginHorizontal: 25, marginTop: 10, elevation: 0
     },
-    // ? Not sure why this needs to be set, not receiving App style
-    cardStyle: {
-      backgroundColor: '#242947'
-    }
-  })
+    headerTintColor: '#fff'
+  },
+  // ? Not sure why this needs to be set, not receiving App style
+  cardStyle: {
+    backgroundColor: '#242947'
+  }
+})
 
 const VerificationStack = createStackNavigator({
   Verification
 }, {
-    defaultNavigationOptions: {
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: '#232947', marginHorizontal: 30, marginTop: 10
-      },
-      headerTintColor: '#fff'
+  defaultNavigationOptions: {
+    headerStyle: {
+      borderBottomWidth: 0,
+      backgroundColor: '#232947', marginHorizontal: 30, marginTop: 10, elevation: 0
     },
-    // ? Not sure why this needs to be set, not receiving App style
-    cardStyle: {
-      backgroundColor: '#242947'
-    }
-  })
+    headerTintColor: '#fff'
+  },
+  cardStyle: {
+    backgroundColor: '#242947'
+  }
+})
 
 const HomeStack = createStackNavigator({
   Home,
   RecommendationActions
 }, {
-    defaultNavigationOptions: {
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: '#232947'
-      },
-      headerTintColor: '#fff'
+  defaultNavigationOptions: {
+    headerStyle: {
+      borderBottomWidth: 0,
+      backgroundColor: '#232947', marginHorizontal: 25, elevation: 0
     },
-    // ? Not sure why this needs to be set, not receiving App style
-    cardStyle: {
-      backgroundColor: '#242947'
-    }
-  })
+    headerTintColor: '#fff'
+  },
+  cardStyle: {
+    backgroundColor: '#242947'
+  }
+})
 
 const EmailStack = createStackNavigator({
   Email
 }, {
-    defaultNavigationOptions: {
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: '#232947'
-      },
-      headerTintColor: '#fff'
+  defaultNavigationOptions: {
+    headerStyle: {
+      borderBottomWidth: 0,
+      backgroundColor: '#232947', elevation: 0
     },
-    // ? Not sure why this needs to be set, not receiving App style
-    cardStyle: {
-      backgroundColor: '#242947'
-    }
-  })
+    headerTintColor: '#fff'
+  },
+  cardStyle: {
+    backgroundColor: '#242947'
+  }
+})
 
 const ThreatsStack = createStackNavigator({
   Threats,
   Recommendations
 }, {
-    defaultNavigationOptions: {
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: '#232947'
-      },
-      headerTintColor: '#fff'
+  defaultNavigationOptions: {
+    headerStyle: {
+      borderBottomWidth: 0,
+      backgroundColor: '#232947', marginHorizontal: 25, elevation: 0
     },
-    // ? Not sure why this needs to be set, not receiving App style
-    cardStyle: {
-      backgroundColor: '#242947'
-    }
-  })
+    headerTintColor: '#fff'
+  },
+  cardStyle: {
+    backgroundColor: '#242947'
+  }
+})
 
 const FeedStack = createStackNavigator({
   Feed
 }, {
-    defaultNavigationOptions: {
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: '#232947'
-      },
-      headerTintColor: '#fff'
+  defaultNavigationOptions: {
+    headerStyle: {
+      borderBottomWidth: 0,
+      backgroundColor: '#232947', elevation: 0
     },
-    // ? Not sure why this needs to be set, not receiving App style
-    cardStyle: {
-      backgroundColor: '#242947'
-    }
-  })
+    headerTintColor: '#fff'
+  },
+  cardStyle: {
+    backgroundColor: '#242947'
+  }
+})
 
 const ProfileStack = createStackNavigator({
   Profile,
   ChangePassword,
   ChangeIndustries
 }, {
-    defaultNavigationOptions: {
-      headerStyle: {
-        borderBottomWidth: 0,
-        backgroundColor: '#232947'
-      },
-      headerTintColor: '#fff'
+  defaultNavigationOptions: {
+    headerStyle: {
+      borderBottomWidth: 0,
+      backgroundColor: '#232947', marginHorizontal: 25, elevation: 0
     },
-    // ? Not sure why this needs to be set, not receiving App style
-    cardStyle: {
-      backgroundColor: '#242947'
-    }
-  })
+    headerTintColor: '#fff'
+  },
+  // ? Not sure why this needs to be set, not receiving App style
+  cardStyle: {
+    backgroundColor: '#242947'
+  }
+})
 
 const DashStack = createBottomTabNavigator({
   Home: {
@@ -200,15 +204,15 @@ const DashStack = createBottomTabNavigator({
     }
   }
 }, {
-    tabBarOptions: {
-      showLabel: false,
-      activeTintColor: '#fb4968',
-      inactiveTintColor: '#4d5471',
-      style: {
-        backgroundColor: '#2a3052'
-      }
+  tabBarOptions: {
+    showLabel: false,
+    activeTintColor: '#fb4968',
+    inactiveTintColor: '#4d5471',
+    style: {
+      backgroundColor: '#2a3052'
     }
-  });
+  }
+});
 
 class Loading extends React.Component {
   constructor(props) {
@@ -224,7 +228,7 @@ class Loading extends React.Component {
     let email = await AsyncStorage.getItem('email');
     let verified = await AsyncStorage.getItem('verified');
 
-    console.log("VERIFIED", token, email, verified)
+    console.log(`Local Storage: token: ${token}, email: ${email}, verified: ${verified}`)
 
     this.props.navigation.navigate(
       token && email ?
@@ -247,7 +251,8 @@ const AppContainer = createAppContainer(createSwitchNavigator({
   Loading,
   Authentication: AuthStack,
   VerificationStack,
-  Dashboard: DashStack
+  Dashboard: DashStack,
+  Error
 }));
 
 
@@ -265,9 +270,6 @@ class App extends React.Component {
     let obj = Linking.parse(url)
     let email = obj.queryParams.registeredProfileEmail
     let { verified } = obj.queryParams
-
-    console.log("VERIFIED:", verified)
-    console.log("TYPE OF", typeof (verified))
 
     // // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
@@ -307,8 +309,9 @@ class App extends React.Component {
   verifyPassword(url) {
     console.log("URL IS", url)
     let obj = Linking.parse(url)
-    let { verified } = obj.queryParams
-    console.log("VERIFIED", typeof (verified))
+    let { token, verified } = obj.queryParams
+
+    console.log("QUERY TOKEN", token)
     if (verified === 'false') {
       Alert.alert(
         'Reset password link expired',
@@ -328,7 +331,7 @@ class App extends React.Component {
       let userProfileId = obj.queryParams.userProfileId
 
       this.navigator && this.navigator.dispatch(
-        NavigationActions.navigate({ routeName: 'ResetPassword', params: { userProfileId } })
+        NavigationActions.navigate({ routeName: 'ResetPassword', params: { userProfileId, token } })
       );
     }
   }
@@ -336,10 +339,17 @@ class App extends React.Component {
 
 
   async componentDidMount() {
-    // let verified = await AsyncStorage.getItem('verified')
-    // console.log("HERE", verified)
+
+    // Initializes Sentry for error monitoring
+    Sentry.init({
+      dsn: 'https://2a564b5ea3324b4a8088dd0750acb197@sentry.io/1750970',
+      enableInExpoDevelopment: false,
+      debug: true
+    });
+
     // AsyncStorage.clear()
-    // Handle email verification if app is opened
+
+    // Handle email verification if app is open
     Linking.addEventListener('url', ({ url }) => {
       console.log("Event listener fired:", url)
       if (url.includes('verify/email')) this.verifyEmail(url)
@@ -351,8 +361,9 @@ class App extends React.Component {
       console.log("Initial Url: ", url)
       if (url.includes('verify/email')) this.verifyEmail(url)
       else if (url.includes('verify/password')) this.verifyPassword(url)
-
     })
+
+
 
     // Setting default styles for all Text components.
     const customTextProps = {
@@ -368,6 +379,13 @@ class App extends React.Component {
     );
     let finalStatus = existingStatus;
 
+    // Alert.alert(
+    //   `Notification status`,
+    //   finalStatus,
+    //   [{ text: 'OK' }],
+    //   { cancelable: false },
+    // )
+
     // only ask if permissions have not already been determined, because
     // iOS won't necessarily prompt the user a second time.
     if (existingStatus !== 'granted') {
@@ -377,34 +395,59 @@ class App extends React.Component {
       finalStatus = status;
     }
 
+    console.log("STATUS", finalStatus)
+
     // Stop here if the user did not grant permissions
     if (finalStatus !== 'granted') {
       return;
     }
 
+
+
     let token = await Notifications.getExpoPushTokenAsync();
-    console.log("This Device Id is:", token)
+    console.log("This Device ID is:", token)
+    // Alert.alert(
+    //   `This Device ID is:`,
+    //   token,
+    //   [{ text: 'OK' }],
+    //   { cancelable: false },
+    // )
 
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
 
-  _handleNotification = (notification) => {
+  _handleNotification = async (notification) => {
     if (notification) {
       console.log("NOTIFICATION ARRIVED:", notification)
-      // this.setState({ notification: notification } 
 
-      // Handles IOS notifications in foreground
-     if(Platform.OS ==="ios") 
-        {this.popup.show({
+      // Alert.alert(
+      //   `Notification Arrived!`,
+      //   notification.data.message,
+      //   [{ text: 'OK' }],
+      //   { cancelable: false },
+      // )
+
+      let userProfileId = await AsyncStorage.getItem('userProfileId')
+
+      if (userProfileId) {
+        axios.get(`${constants.BASE_URL}/notifications/count?userProfileId=${userProfileId}`, { headers: { 'Authorization': await AsyncStorage.getItem('token') } })
+          .then(resp => {
+            console.log('Notification counter', resp.data)
+            AsyncStorage.setItem('notificationCounter', JSON.stringify(resp.data.notificationHistoryList))
+          })
+          .catch(err => console.log(err))
+      }
+
+      // Handles notifications in foreground
+      this.popup.show({
         onPress: function () { console.log('Pressed') },
         appIconSource: require('./assets/lacl-small.png'),
         appTitle: 'LA Cyber Lab',
         timeText: 'Now',
-        // title: 'Hello World',
         body: notification.data.message,
         slideOutTime: 1500
       });
-    }}
+    }
   };
 
 
@@ -412,18 +455,18 @@ class App extends React.Component {
 
     return (
       <Provider
-      store={store}>
-     
-     <View style={style.app}>
-        <StatusBar barStyle="light-content" />
-        <AppContainer ref={nav => { this.navigator = nav; }} />
-        <NotificationPopup
-          ref={ref => this.popup = ref}
-          renderPopupContent={renderCustomPopup}
-        />
-      </View>
+        store={store}>
+
+        <View style={style.app}>
+          <StatusBar barStyle="light-content" />
+          <AppContainer ref={nav => { this.navigator = nav; }} />
+          <NotificationPopup
+            ref={ref => this.popup = ref}
+            renderPopupContent={renderCustomPopup}
+          />
+        </View>
       </Provider>
-      
+
     )
   }
 }

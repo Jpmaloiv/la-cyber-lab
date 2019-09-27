@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html -->
+<html class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" lang="en" style=""><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Get Indicator Summaries — TruSTAR Documentation  documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="https://docs.trustar.co/_static/favicon.ico">
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="./Get Indicator Summaries — TruSTAR Documentation documentation_files/theme.css" type="text/css">
+  
+
+  
+    <link rel="stylesheet" href="./Get Indicator Summaries — TruSTAR Documentation documentation_files/custom.css" type="text/css">
+  
+
+  
+        <link rel="index" title="Index" href="https://docs.trustar.co/genindex.html">
+        <link rel="search" title="Search" href="https://docs.trustar.co/search.html">
+    <link rel="top" title="TruSTAR Documentation  documentation" href="https://docs.trustar.co/index.html">
+        <link rel="up" title="Indicators" href="https://docs.trustar.co/api/v13/indicators/index.html">
+        <link rel="next" title="Tags" href="https://docs.trustar.co/api/v13/tags/index.html">
+        <link rel="prev" title="Submit Indicators" href="https://docs.trustar.co/api/v13/indicators/submit_indicators.html"> 
+
+  
+  <script src="./Get Indicator Summaries — TruSTAR Documentation documentation_files/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="https://docs.trustar.co/index.html" class="icon icon-home"> TruSTAR Documentation
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="https://docs.trustar.co/search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="https://docs.trustar.co/api/index.html"><span class="toctree-expand"></span>Rest API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="https://docs.trustar.co/api/v10.html">Version 1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://docs.trustar.co/api/v11.html">Version 1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://docs.trustar.co/api/v12/index.html"><span class="toctree-expand"></span>Version 1.2</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v12/reports/index.html"><span class="toctree-expand"></span>Reports</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/reports/report_submission.html">Report Submission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/reports/update_report.html">Update Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/reports/get_report_details.html">Get Report Details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/reports/delete_report.html">Delete Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/reports/get_reports.html">Get Reports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/reports/find_correlated_reports.html">Find Correlated Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v12/indicators/index.html"><span class="toctree-expand"></span>Indicators</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/indicators/get_latest_indicators.html">Get Latest Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/indicators/find_indicators.html">Find Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/indicators/community_trends.html">Get Trending Community Indicators</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v12/tags/index.html"><span class="toctree-expand"></span>Tags</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/tags/get_enclave_tags_for_report.html">Get Enclave Tags For Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/tags/add_enclave_tag_to_report.html">Add Enclave Tag To Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v12/tags/delete_enclave_tag_from_report.html">Delete Enclave Tag From Report</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="https://docs.trustar.co/api/v13/index.html"><span class="toctree-expand"></span>Version 1.3</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v13/ping.html">Ping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v13/version.html">Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v13/request_quotas.html">Request Quotas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/index.html"><span class="toctree-expand"></span>Reports</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/submit_report.html">Submit Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/update_report.html">Update Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/get_report_details.html">Get Report Details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/delete_report.html">Delete Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/get_reports.html">Get Reports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/find_correlated_reports.html">Find Correlated Reports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/reports/search_reports.html">Search Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/index.html"><span class="toctree-expand"></span>Indicators</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicators_for_report.html">Get Indicators for Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/find_related_indicators.html">Find Related Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/community_trends.html">Get Trending Community Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/search_indicators.html">Search Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_whitelist.html">Get Whitelist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/add_to_whitelist.html">Add to Whitelist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/delete_from_whitelist.html">Delete from Whitelist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicator_list.html">Get Indicator List</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicator_metadata.html">Get Indicator Metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/submit_indicators.html">Submit Indicators</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#">Get Indicator Summaries</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/index.html"><span class="toctree-expand"></span>Tags</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/get_all_report_tags.html">Get All Report Tags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/get_tags_for_report.html">Get Tags For Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/add_tag_to_report.html">Add Tag To Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/delete_tag_from_report.html">Delete Tag From Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/get_indicator_tags.html">Get All Indicator Tags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/add_tag_to_indicator.html">Add Tag to Indicator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/tags/delete_tag_from_indicator.html">Delete Tag from Indicator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v13/enclaves/index.html"><span class="toctree-expand"></span>Enclaves</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/enclaves/get_enclaves.html">Get Enclaves</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/index.html"><span class="toctree-expand"></span>Errors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/invalid_token.html">Invalid OAuth2 Token (400)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/expired_token.html">Expired OAuth2 Token (400)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/bad_request.html">Bad Request (400)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/unauthorized.html">Unauthorized (401)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/forbidden.html">Forbidden (403)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/not_found.html">Not Found (404)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/payload_too_large.html">Payload Too Large (413)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/too_many_requests.html">Too Many Requests (429)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/api/v13/errors/internal_server_error.html">Internal Server Error (500)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="https://docs.trustar.co/sdk/index.html"><span class="toctree-expand"></span>Python SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="https://docs.trustar.co/sdk/quick_start.html">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/index.html"><span class="toctree-expand"></span>TruStar (Main Class)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/index.html"><span class="toctree-expand"></span>Reports</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/get_report_details.html">Get Report Details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/submit_report.html">Submit Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/update_report.html">Update Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/delete_report.html">Delete Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/get_reports.html">Get Reports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/get_reports_page.html">Get Reports (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/get_correlated_reports.html">Get Correlated Reports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/get_correlated_reports_page.html">Get Correlated Reports (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/search_reports.html">Search Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/reports/search_reports_page.html">Search Report (Page)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/index.html"><span class="toctree-expand"></span>Indicators</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicators_for_report.html">Get Indicators for Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicators_for_report_page.html">Get Indicators for Report (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_related_indicators.html">Get Related Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_related_indicators_page.html">Get Related Indicators (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/search_indicators.html">Search Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/search_indicators_page.html">Search Indicators (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_whitelist.html">Get Whitelist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_whitelist_page.html">Get Whitelist (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicators.html">Get Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicators_page.html">Get Indicators (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicator_summaries.html">Get Indicator Summaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicator_summaries_page.html">Get Indicator Summaries (Page)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/add_terms_to_whitelist.html">Add Terms to Whitelist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/delete_indicator_from_whitelist.html">Delete Indicator from Whitelist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_community_trends.html">Get Community Trends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/submit_indicators.html">Submit Indicators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicators_metadata.html">Get Indicators Metadata</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/indicators/get_indicator_metadata.html">Get Indicator Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/index.html"><span class="toctree-expand"></span>Tags</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/get_enclave_tags.html">Get Enclave Tags for Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/add_enclave_tag.html">Add Enclave Tag to Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/delete_enclave_tag.html">Delete Enclave Tag from Report</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/get_all_enclave_tags.html">Get All Enclave Tags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/add_indicator_tag.html">Add Indicator Tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/delete_indicator_tag.html">Delete Indicator Tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/tags/get_all_indicator_tags.html">Get All Indicator Tags</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/enclaves/index.html"><span class="toctree-expand"></span>Enclaves</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/enclaves/get_user_enclaves.html">Get Enclaves</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/utility/index.html"><span class="toctree-expand"></span>Utility</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/utility/ping.html">Ping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/utility/version.html">Version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="https://docs.trustar.co/sdk/TruStar/utility/get_request_quotas.html">Get Request Quotas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://docs.trustar.co/sdk/models/index.html"><span class="toctree-expand"></span>Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/Report.html">Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/Indicator.html">Indicator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/IndicatorSummary.html">Indicator Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/IntelligenceSource.html">Intelligence Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/Tag.html">Tag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/Enclave.html">Enclave</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/EnclavePermissions.html">Enclave Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/Page.html">Page</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/models/RequestQuota.html">Request Quota</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="https://docs.trustar.co/sdk/examples/index.html"><span class="toctree-expand"></span>Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/examples/ingest_report_csv.html">Ingest Report CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/examples/create_indicators_csv.html">Create Indicators CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/examples/delete_reports.html">Delete Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="https://docs.trustar.co/sdk/examples/pagination.html">Pagination</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="https://docs.trustar.co/index.html">TruSTAR Documentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="https://docs.trustar.co/index.html">Docs</a> »</li>
+        
+          <li><a href="https://docs.trustar.co/api/index.html">TruSTAR API</a> »</li>
+        
+          <li><a href="https://docs.trustar.co/api/v13/index.html">Version 1.3</a> »</li>
+        
+          <li><a href="https://docs.trustar.co/api/v13/indicators/index.html">Indicators</a> »</li>
+        
+      <li>Get Indicator Summaries</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="get-indicator-summaries">
+<h1>Get Indicator Summaries<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#get-indicator-summaries" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-none"><div class="highlight"><pre><span></span>POST /1.3/indicators/summaries
+</pre></div>
+</div>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#description" title="Permalink to this headline">¶</a></h2>
+<p>Provides structured summaries about indicators, which are derived from intelligence sources on the TruSTAR Marketplace that the user has access to.</p>
+<p>Reports from many sources on the TruSTAR Marketplace represent intelligence about specific indicators.  TruSTAR extracts
+and normalizes important information from these reports and presents them in the form of indicator summaries.</p>
+<p>These summaries are not created by TruSTAR analysts, they are simply normalized representations of information directly
+extracted from reports from third-party intelligence sources on the TruSTAR Marketplace.</p>
+</div>
+<div class="section" id="response">
+<h2>Response<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#response" title="Permalink to this headline">¶</a></h2>
+<p>The response JSON is a page of Indicator Summary objects.</p>
+<div class="section" id="indicator-summary">
+<span id="indicator-summary-resource-label"></span><h3>Indicator Summary<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#indicator-summary" title="Permalink to this headline">¶</a></h3>
+<p>A structured summary of an indicator, derived from data provided by an intelligence source about the indicator.</p>
+<div class="wy-table-responsive"><table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="17%">
+<col width="17%">
+<col width="67%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>value</td>
+<td>String</td>
+<td>The indicator’s value.</td>
+</tr>
+<tr class="row-odd"><td>reportId</td>
+<td>String</td>
+<td>The ID of the report for this summary.</td>
+</tr>
+<tr class="row-even"><td>enclaveId</td>
+<td>String</td>
+<td>The ID of the report’s enclave.</td>
+</tr>
+<tr class="row-odd"><td>source</td>
+<td><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#intelligence-source-resource-label"><span class="std std-ref">IntelligenceSource</span></a></td>
+<td>An object containing information about the source that the report came from.</td>
+</tr>
+<tr class="row-even"><td>score</td>
+<td><a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#indicator-score-resource-label"><span class="std std-ref">IndicatorScore</span></a></td>
+<td>The score of the report, according to the source.</td>
+</tr>
+<tr class="row-odd"><td>created</td>
+<td>Integer</td>
+<td>The created or first seen timestamp of the indicator, according to the source.</td>
+</tr>
+<tr class="row-even"><td>updated</td>
+<td>Integer</td>
+<td>The updated or last seen timestamp of the indicator, according to the source.</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>String</td>
+<td>The description of the indicator, according to the source.</td>
+</tr>
+<tr class="row-even"><td>attributes</td>
+<td>List[<a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#indicator-attribute-resource-label"><span class="std std-ref">IndicatorAttribute</span></a>]</td>
+<td>A list of attributes about the indicator, according to the source.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="indicator-attribute">
+<span id="indicator-attribute-resource-label"></span><h3>Indicator Attribute<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#indicator-attribute" title="Permalink to this headline">¶</a></h3>
+<p>An attribute of the indicator, derived from the data provided by the intelligence source.</p>
+<div class="wy-table-responsive"><table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="17%">
+<col width="17%">
+<col width="67%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>The name of the attribute, e.g. “Actors” or “Malware Families”</td>
+</tr>
+<tr class="row-odd"><td>value</td>
+<td>Any</td>
+<td>The value of the attribute, e.g. “North Korea” or “Emotet”</td>
+</tr>
+<tr class="row-even"><td>logical_type</td>
+<td>String</td>
+<td>Describes how to interpret the <code class="docutils literal"><span class="pre">value</span></code> field, e.g. could be “timestamp” if <code class="docutils literal"><span class="pre">value</span></code> is an integer.</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>String</td>
+<td>A description of how to interpret this attribute.  This corresponds to the attribute name,
+i.e. this will be the same for all attributes in a source with the same name.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="indicator-score">
+<span id="indicator-score-resource-label"></span><h3>Indicator Score<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#indicator-score" title="Permalink to this headline">¶</a></h3>
+<p>The indicator’s score, as provided by the intelligence source.</p>
+<div class="wy-table-responsive"><table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="17%">
+<col width="17%">
+<col width="67%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>The name of the score type, e.g. “Risk Score” or “Malicious Confidence”</td>
+</tr>
+<tr class="row-odd"><td>value</td>
+<td>String</td>
+<td>The value of the score, as directly extracted from the source, e.g. “HIGH” or “78”</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="intelligence-source">
+<span id="intelligence-source-resource-label"></span><h3>Intelligence Source<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#intelligence-source" title="Permalink to this headline">¶</a></h3>
+<p>An object representing the intelligence source.</p>
+<div class="wy-table-responsive"><table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="17%">
+<col width="17%">
+<col width="67%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>key</td>
+<td>String</td>
+<td>A string that uniquely identifies the source, e.g. “virustotal”</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>String</td>
+<td>A human-readable name of the source, as a human-readable string, e.g. “VirusTotal”</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#parameters" title="Permalink to this headline">¶</a></h2>
+<p>The request JSON body must be a well-formed JSON list, where each entry is the string value of an indicator, as
+represented in the TruSTAR system.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The indicator values must <strong>exactly match</strong> values in the TruSTAR system.  In order to perform a fuzzy match, you
+must first use the <a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/search_indicators.html#search-indicators-endpoint-label"><span class="std std-ref">Search Indicators</span></a> endpoint to lookup the exact indicator
+values, then provide them to this endpoint.</p>
+</div>
+<div class="section" id="query-string-parameters">
+<h3>Query String Parameters<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#query-string-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="wy-table-responsive"><table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="12%">
+<col width="5%">
+<col width="24%">
+<col width="60%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Required</th>
+<th class="head">Default</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>enclaveIds</td>
+<td>&nbsp;</td>
+<td>all of the user’s enclaves</td>
+<td>The enclaves to search for indicator summaries in.  These should be enclaves containing data from sources on the
+TruSTAR Marketplace.</td>
+</tr>
+<tr class="row-odd"><td>pageSize</td>
+<td>&nbsp;</td>
+<td>25</td>
+<td>Size of page to return within time range.  Max allowed size is 100.</td>
+</tr>
+<tr class="row-even"><td>pageNumber</td>
+<td>&nbsp;</td>
+<td>0</td>
+<td>The page to start returning results from.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="section" id="response-200">
+<h2>Response (200)<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#response-200" title="Permalink to this headline">¶</a></h2>
+<p>A page of <a class="reference internal" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#indicator-summary-resource-label"><span class="std std-ref">IndicatorSummary</span></a> objects.</p>
+</div>
+<div class="section" id="example-usage">
+<h2>Example Usage<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#example-usage" title="Permalink to this headline">¶</a></h2>
+<div class="code shell highlight-default"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">k</span> <span class="o">-</span><span class="n">H</span> <span class="s2">"Content-Type: application/json"</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> <span class="s1">'["LOCKY", "23.121.54.102"]'</span> <span class="o">-</span><span class="n">H</span> <span class="s2">"Authorization: Bearer </span><span class="si">{token}</span><span class="s2">"</span> <span class="s2">"https://api.trustar.co/api/1.3/indicators/summaries?enclaveIds=fdb4676c-1e02-47ad-b19a-24e5867c5485"</span>
+</pre></div>
+</div>
+<div class="section" id="request-body">
+<h3>Request Body<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#request-body" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="s2">"LOCKY"</span><span class="p">,</span>
+    <span class="s2">"23.121.54.102"</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h3>Response<a class="headerlink" href="https://docs.trustar.co/api/v13/indicators/get_indicator_summaries.html#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">"pageNumber"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">"totalPages"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">"pageSize"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="nt">"totalElements"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="nt">"items"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">"reportId"</span><span class="p">:</span> <span class="s2">"5dc52e41-4d22-43cc-92b2-bcca62f02a52"</span><span class="p">,</span>
+            <span class="nt">"updated"</span><span class="p">:</span> <span class="mi">1565074829435</span><span class="p">,</span>
+            <span class="nt">"enclaveId"</span><span class="p">:</span> <span class="s2">"fdb4676c-1e02-47ad-b19a-24e5867c5485"</span><span class="p">,</span>
+            <span class="nt">"source"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">"key"</span><span class="p">:</span> <span class="s2">"crowdstrike_indicator"</span><span class="p">,</span>
+                <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"CrowdStrike"</span>
+            <span class="p">},</span>
+            <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"MALWARE"</span><span class="p">,</span>
+            <span class="nt">"value"</span><span class="p">:</span> <span class="s2">"LOCKY"</span><span class="p">,</span>
+            <span class="nt">"score"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Malicious Confidence"</span><span class="p">,</span>
+                <span class="nt">"value"</span><span class="p">:</span> <span class="s2">"high"</span>
+            <span class="p">},</span>
+            <span class="nt">"attributes"</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Malware Families"</span><span class="p">,</span>
+                    <span class="nt">"value"</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s2">"njRAT"</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Indicator Type"</span><span class="p">,</span>
+                    <span class="nt">"value"</span><span class="p">:</span> <span class="s2">"campaign_id"</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Relations Count"</span><span class="p">,</span>
+                    <span class="nt">"value"</span><span class="p">:</span> <span class="mi">20</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">"reportId"</span><span class="p">:</span> <span class="s2">"1af288dc-9479-44ca-8ea1-b25bcaa961e3"</span><span class="p">,</span>
+            <span class="nt">"updated"</span><span class="p">:</span> <span class="mi">1565074288021</span><span class="p">,</span>
+            <span class="nt">"enclaveId"</span><span class="p">:</span> <span class="s2">"fdb4676c-1e02-47ad-b19a-24e5867c5485"</span><span class="p">,</span>
+            <span class="nt">"source"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">"key"</span><span class="p">:</span> <span class="s2">"crowdstrike_indicator"</span><span class="p">,</span>
+                <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"CrowdStrike"</span>
+            <span class="p">},</span>
+            <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"IP"</span><span class="p">,</span>
+            <span class="nt">"value"</span><span class="p">:</span> <span class="s2">"23.121.54.102"</span><span class="p">,</span>
+            <span class="nt">"score"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Malicious Confidence"</span><span class="p">,</span>
+                <span class="nt">"value"</span><span class="p">:</span> <span class="s2">"low"</span>
+            <span class="p">},</span>
+            <span class="nt">"attributes"</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"IP Address Types"</span><span class="p">,</span>
+                    <span class="nt">"value"</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="s2">"TorProxy"</span>
+                    <span class="p">]</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Indicator Type"</span><span class="p">,</span>
+                    <span class="nt">"value"</span><span class="p">:</span> <span class="s2">"ip_address"</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Relations Count"</span><span class="p">,</span>
+                    <span class="nt">"value"</span><span class="p">:</span> <span class="mi">0</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">"empty"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">"hasNext"</span><span class="p">:</span> <span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="https://docs.trustar.co/api/v13/tags/index.html" class="btn btn-neutral float-right" title="Tags" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="https://docs.trustar.co/api/v13/indicators/submit_indicators.html" class="btn btn-neutral" title="Submit Indicators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr>
+
+  <div role="contentinfo">
+    <p>
+        © Copyright 2017, TruSTAR.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org/">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="./Get Indicator Summaries — TruSTAR Documentation documentation_files/jquery.js"></script>
+      <script type="text/javascript" src="./Get Indicator Summaries — TruSTAR Documentation documentation_files/underscore.js"></script>
+      <script type="text/javascript" src="./Get Indicator Summaries — TruSTAR Documentation documentation_files/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="./Get Indicator Summaries — TruSTAR Documentation documentation_files/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+
+</body></html>
