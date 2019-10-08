@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, FlatList, Image, Linking, Share, Text, TouchableOpacity, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, FlatList, Image, Linking, Platform, Share, Text, TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Divider } from 'react-native-elements'
 import HTMLView from 'react-native-htmlview';
 import moment from 'moment'
@@ -81,9 +81,14 @@ class Feed extends React.PureComponent {
                                     {item.isTwitter ?
                                         <View>
                                             <View style={style.body}>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <Icon name='twitter' color='#1da1f2' size={25} />
-                                                    <Text style={{ fontSize: 14 }}>  {item.handle}</Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                        <Icon name='twitter' color='#1da1f2' size={25} />
+                                                        <Text style={{ fontSize: 14 }}>  {item.handle}</Text>
+                                                    </View>
+                                                    <TouchableOpacity onPress={() => this.onShare(`Check out this tweet by ${item.handle}!\n\n${Platform.OS === 'android' ? item.links[0].url : ''}`, item.links[0].url)}>
+                                                        <Image style={{ marginLeft: 5 }} source={require('../../../assets/images/share.png')} />
+                                                    </TouchableOpacity>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                                     <View style={{ maxWidth: '90%' }}>
@@ -95,10 +100,6 @@ class Feed extends React.PureComponent {
 
                                                         <Text style={style.h6}>{moment(item.published).fromNow()}</Text>
                                                     </View>
-                                                    <TouchableOpacity onPress={() => this.onShare(`Check out this tweet by ${item.handle}!`, item.links[0].url)}>
-                                                        <Image style={{ marginLeft: 5 }} source={require('../../../assets/images/share.png')} />
-                                                    </TouchableOpacity>
-
                                                 </View>
                                             </View>
                                             <Divider style={{ height: 16, backgroundColor: '#232947' }} />
@@ -107,11 +108,11 @@ class Feed extends React.PureComponent {
                                         :
                                         <View>
                                             <View style={[style.body, { marginRight: 10, flexDirection: 'row', justifyContent: 'space-between' }]}>
-                                                <View>
+                                                <View style={{ maxWidth: '90%' }}>
                                                     <Text style={[style.h3, { flexWrap: 'wrap' }]}>{item.title}</Text>
                                                     <Text style={style.h6}>{moment(item.published).fromNow()}</Text>
                                                 </View>
-                                                <TouchableOpacity onPress={() => this.onShare(`Check out this article!`, item.links[0].url)}>
+                                                <TouchableOpacity onPress={() => this.onShare(`Check out this article!\n\n${Platform.OS === 'android' ? item.links[0].url : ''}`, item.links[0].url)}>
                                                     <Image style={{ paddingLeft: 7 }} source={require('../../../assets/images/share.png')} />
                                                 </TouchableOpacity>
                                             </View>

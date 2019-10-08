@@ -31,19 +31,19 @@ export default class RecommendationActions extends React.Component {
         let alertLevel = navigation.getParam('alertLevel').toLowerCase()
 
         switch (alertLevel) {
-            case 'low': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-low.png')} />
+            case 'low': src = <Image style={{ width: 81, height: 21 }} source={require('../../../assets/images/threat-low.png')} />
                 desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#73ae57', fontWeight: 'bold' }}>LOW </Text>indicates a low risk. No unusual activity exists beyond the normal concern for known hacking activities, known viruses, or other malicious activity.</Text>
                 break;
-            case 'guarded': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-guarded.png')} />
+            case 'guarded': src = <Image style={{ width: 81, height: 21 }} source={require('../../../assets/images/threat-guarded.png')} />
                 desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#2c91b3', fontWeight: 'bold' }}>GUARDED </Text>indicates a general risk of increased hacking, virus, or other malicious activity.</Text>
                 break;
-            case 'elevated': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-elevated.png')} />
+            case 'elevated': src = <Image style={{ width: 81, height: 21 }} source={require('../../../assets/images/threat-elevated.png')} />
                 desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#ecde29', fontWeight: 'bold' }}>ELEVATED </Text>indicates a significant risk due to increased hacking, virus, or other malicious activity that compromises systems or diminishes service.</Text>
                 break;
-            case 'high': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-high.png')} />
+            case 'high': src = <Image style={{ width: 81, height: 21 }} source={require('../../../assets/images/threat-high.png')} />
                 desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#f37043', fontWeight: 'bold' }}>HIGH </Text>indicates a high risk of increased hacking, virus, or other malicious cyber activity that targets core/critical infrastructure to cause multiple service outages and system compromises.</Text>
                 break;
-            case 'severe': src = <Image style={{ width: 79, height: 20 }} source={require('../../../assets/images/threat-severe.png')} />
+            case 'severe': src = <Image style={{ width: 81, height: 21 }} source={require('../../../assets/images/threat-severe.png')} />
                 desc = <Text style={{ fontSize: 12 }}><Text style={{ color: '#d0122f', fontWeight: 'bold' }}>SEVERE </Text>indicates a severe risk of hacking, virus, or other malicious activity resulting in widespread outages and/or significantly destructive compromises to systems or critical infrastructure sectors.</Text>
 
         }

@@ -43,7 +43,7 @@ export default class Recommendations extends React.Component {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ flexDirection: 'row', height: 91, marginVertical: 15, borderRadius: 5, backgroundColor: '#313961', justifyContent: 'space-around', alignItems: 'center' }}>
                     <Text style={style.h3}>THREAT LEVEL</Text>
-                    <Image style={{width: 79, height: 20}} source={item.src} />
+                    <Image style={{width: 81, height: 21}} source={item.src} />
                 </View>
 
                 <View>
